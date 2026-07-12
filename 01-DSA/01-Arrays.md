@@ -73,3 +73,74 @@ class Solution {
 ```
 
 Time - O(n)  Space - O(1)
+
+## [283. Move Zeroes](https://leetcode.com/problems/move-zeroes/)
+
+Sol - Using two pointer, keep one pointer at the starting and iterate, if nums[i] != 0 then we swap the nums[l] with nums[i]
+
+Code below -> 
+```
+class Solution {
+    public void moveZeroes(int[] nums) {
+        int n = nums.length;
+        int l = 0;
+        for(int i = 0; i < n; i++){
+            if(nums[i] != 0){
+                int temp = nums[l];
+                nums[l] = nums[i];
+                nums[i] = temp;
+                l++;
+            }
+        }
+    }
+}
+```
+
+Time - O(n)  Space - O(1)
+
+## [485. Max Consecutive Ones](https://leetcode.com/problems/max-consecutive-ones/)
+
+Sol - Just iterate through and keep a cnt of the max no of ones
+*Note - While returning compare the currentcnt and maxcnt*
+
+Code below
+```
+class Solution {
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int n = nums.length;
+        int cnt = 0;
+        int tempcnt = 0;
+        for(int i = 0; i < n; i++){
+            if(nums[i] == 1){
+                tempcnt++;
+            }
+            else{
+                cnt = Math.max(cnt, tempcnt);
+                tempcnt = 0;
+            }
+        }
+        return cnt > tempcnt ? cnt : tempcnt;
+    }
+}
+```
+
+Time - O(n)  Space - O(1)
+
+## [136. Single Number](https://leetcode.com/problems/single-number/)
+
+Sol - Do XOR
+
+Code below ->
+```
+class Solution {
+    public int singleNumber(int[] nums) {
+        int sum = nums[0];
+        for(int i = 1; i < nums.length; i++){
+            sum = sum ^ nums[i];
+        }
+        return sum;
+    }
+}
+```
+
+Time - O(n)  Space - O(1)
