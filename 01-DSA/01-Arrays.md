@@ -144,3 +144,30 @@ class Solution {
 ```
 
 Time - O(n)  Space - O(1)
+
+## [1. Two Sum](https://leetcode.com/problems/two-sum/)
+
+Sol - Brute force is to double traverse the array and find the match.
+optimal sol will be using hashmap, we keep a track of the target - nums[i] and the index,
+every iteration we look in the map for the reminder of target-nums[i] in the map if that number exist we return the list or else we add this as an entry to the hashMap 
+
+Code below 
+
+```
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> numMap = new HashMap<>();
+        int n = nums.length;
+        for(int i = 0; i < n; i++){
+            int complement = target-nums[i];
+            if(numMap.containsKey(complement)){
+                return new int[] {numMap.get(complement), i};
+            }
+            numMap.put(nums[i], i);
+        }
+        return new int[]{};
+    }
+}
+```
+
+Time - O(n)  Space - O(n)
