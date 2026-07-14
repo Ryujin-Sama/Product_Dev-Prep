@@ -171,3 +171,59 @@ class Solution {
 ```
 
 Time - O(n)  Space - O(n)
+
+## [75. Sort Colors](https://leetcode.com/problems/sort-colors/)
+
+Sol - Use Dutch National Flag algo, here we use a while loop till mid crosses high point and initialize low and mid with 0 and high with n - 1, and run the loop and if nums[mid] == 0 then we swap with the nums[low] and nums[mid] and increment both, if nums[mid] == 1 then just increment mid and if nums[mid] == 2 then swap nums[mid] with nums[high]
+
+Code below - > 
+
+```
+class Solution {
+    public void sortColors(int[] nums) {
+        int n = nums.length;
+        int i = 0,j = 0, k = n-1;
+        while(j <= k){
+            if(nums[j] == 0){
+                int temp = nums[i];
+                nums[i++] = nums[j];
+                nums[j++] = temp;
+            }
+            else if(nums[j] == 1) j++;
+            else{
+                int temp = nums[j];
+                nums[j] = nums[k];
+                nums[k--] = temp;
+            }
+        }
+    }
+}
+```
+
+Time - O(n)  Space - O(1)
+
+## [169. Majority Element](https://leetcode.com/problems/majority-element/)
+
+Soln - Use Moore's voting Algo, where we run a for each loop and check the following
+if cnt  = 0 then assign the target as nums
+if num = target then we increment the cnt 
+else we decrement the cnt and in the end return the target
+
+Code Below -> 
+
+```
+class Solution {
+    public int majorityElement(int[] nums) {
+        int target = nums[0];
+        int cnt = 0;
+        for(int num: nums){
+            if(cnt == 0) target = num;
+            if(num == target) cnt++;
+            else cnt--;
+        }
+        return target;
+    }
+}
+```
+
+Time - O(N)  Space - O(1)
