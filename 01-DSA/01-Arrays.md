@@ -204,7 +204,7 @@ Time - O(n)  Space - O(1)
 
 ## [169. Majority Element](https://leetcode.com/problems/majority-element/)
 
-Soln - Use Moore's voting Algo, where we run a for each loop and check the following
+Sol - Use Moore's voting Algo, where we run a for each loop and check the following
 if cnt  = 0 then assign the target as nums
 if num = target then we increment the cnt 
 else we decrement the cnt and in the end return the target
@@ -227,3 +227,79 @@ class Solution {
 ```
 
 Time - O(N)  Space - O(1)
+
+## [53. Maximum Subarray](https://leetcode.com/problems/maximum-subarray/)
+
+Sol - Use Kadence Algo to find the max sum, what we do is take two var and initialize maxSum with nums[0] and currSum with 0, then we iterate through the array with condition that if currSum < 0 then we assign it again 0 and currSum += nums[i] and update the maxSum with whichever is the largest amongst both.
+
+Code Below -> 
+
+```
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int maxSum = nums[0];
+        int currSum = 0;
+        for(int num: nums){
+            if(currSum < 0) currSum = 0;
+            currSum += num;
+            maxSum = Math.max(currSum, maxSum);
+        }
+        return maxSum;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
+
+## [121. Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/)
+
+Sol - Using greedy approach, use two pointer l and r where l is to buy and r is to sell, use a while loop till nums.length and on each iteration look for the condition where nums[l] < nums[r] if yes then we keep a local var to store the profit and then compare with the max profit and if nums[l] > nums[r] then thats our least number where we buy the stock so we assign l = r and in the end return maxProfit.
+
+Code Below -> 
+```
+class Solution {
+    public int maxProfit(int[] prices) {
+        int buy = 0, sell = 1, maxProfit = 0;
+        while(sell < prices.length){
+            if(prices[buy] < prices[sell]){
+                int currentProfit = prices[sell] - prices[buy];
+                maxProfit = Math.max(maxProfit, currentProfit);
+            }
+            else{
+                buy = sell;
+            }
+            sell++;
+        }
+        return maxProfit;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
+
+## [2149. Rearrange Array Elements by Sign](https://leetcode.com/problems/rearrange-array-elements-by-sign/)
+
+Sol - Use two Pointer, create an external array *Note - External Array to return the ans*, we keep a positive and negative var to keep track of the place - pos = 0 and neg = 1 and we iterate through the array on condition if nums[i]  >= 0 then we insert in the positive index and if nums[i] < 0 then we insert in the negative index of the ans array
+
+Code Below -> 
+
+```
+class Solution {
+    public int[] rearrangeArray(int[] nums) {
+        int[] ans = new int[nums.length];
+        int pos = 0, neg = 1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] >= 0) {
+                ans[pos] = nums[i];
+                pos += 2;
+            } else {
+                ans[neg] = nums[i];
+                neg += 2;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(n)  Space  - O(n) *Extra space for returning the ans* 
