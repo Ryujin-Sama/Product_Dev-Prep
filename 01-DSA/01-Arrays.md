@@ -303,3 +303,58 @@ class Solution {
 ```
 
 Time - O(n)  Space  - O(n) *Extra space for returning the ans* 
+
+## [31. Next Permutation](https://leetcode.com/problems/next-permutation/)
+
+Sol - This problem is divided into 3 parts, 1 - we find the breaking point, where the nums[i] < nums[i+1] then we keep mark of i in a variable ind1 and break the loop.
+2- we find the next biggest number for nums[ind] so for this what we do is we iterate from the back of the array and find what's largest then nums[ind] on finding the same we keep track of i with ind2 and we swap ind1 and ind2.
+3-after the breaking point we need to sort the array, instead of sorting we can simply reverse it.
+
+Code below ->
+
+```
+class Solution {
+    public void nextPermutation(int[] nums) {
+        int ind = -1;
+        int ind2 = -1;
+        int n = nums.length;
+        for(int i = n-2; i >= 0; i--){
+            if(nums[i] < nums[i+1]){
+                ind = i;
+                break;
+            }
+        }
+        if(ind == -1) reverse(nums,0);
+        else{
+            for(int i = n-1; i >= 0; i--){
+                if(nums[i] > nums[ind]){
+                    ind2 = i;
+                    break;
+                }
+            }
+            int temp = nums[ind];
+            nums[ind] = nums[ind2];
+            nums[ind2] = temp;
+            reverse(nums, ind+1);
+        }
+    }
+
+    void swap(int[] nums,int i,int j){
+        int temp=nums[i];
+        nums[i]=nums[j];
+        nums[j]=temp;
+    }
+
+    void reverse(int[] nums,int start){
+        int i=start;
+        int j=nums.length-1;
+        while(i<j){
+            swap(nums,i,j);
+            i++;
+            j--;
+        }
+    }
+}
+```
+
+Time - O(n)    Space - O(1)
