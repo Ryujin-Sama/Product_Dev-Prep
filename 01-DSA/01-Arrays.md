@@ -358,3 +358,46 @@ class Solution {
 ```
 
 Time - O(n)    Space - O(1)
+
+
+## [73. Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes/)
+
+Sol - we declare a variable col1 with 1 for the first row and traverse through the matrix and check if the matrix(i)(j) == 0 then we mark the martrix(i)(0) = 0 and if j != 0 we mark the martix(0)(j) = 0 or else we mark col1 = 0 stating the first row, first element is 0, 
+then we iterate in the matrix again from i = 1 and j = 1 and fill the inner element checking if matrix(0)(j) or matrix(i)(0) == 0 then fill matrix(i)(j) = 0,
+and we explicitly check if matrix(0)(0) = 0 if yes then we fill the matrix(0)(j) = 0; and if col1 = 0 then we fill matrix(i)(0) = 0
+
+Code below -> 
+
+```
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int col0 = 1;
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(matrix[i][j] == 0){
+                    matrix[i][0] = 0;
+                    if(j != 0) matrix[0][j] = 0;
+                    else col0 = 0;
+                }
+            }
+        }
+        for(int i = 1; i < n; i++){
+            for(int j = 1; j < m; j++){
+                if(matrix[i][j] != 0){
+                    if(matrix[0][j] == 0 || matrix[i][0] == 0) matrix[i][j] = 0;
+                }
+            }
+        }
+        if(matrix[0][0] == 0){
+            for(int j = 0; j < m; j++) matrix[0][j] = 0;
+        }
+        if(col0 == 0){
+            for(int i = 0; i < n; i++) matrix[i][0] = 0;
+        }
+    }
+}
+```
+
+Time - O(n x m)  Space - O(1)
