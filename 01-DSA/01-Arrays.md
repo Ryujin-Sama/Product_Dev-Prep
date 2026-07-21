@@ -401,3 +401,62 @@ class Solution {
 ```
 
 Time - O(n x m)  Space - O(1)
+
+## [48. Rotate Image](https://leetcode.com/problems/rotate-image/)
+
+Sol -> There are two optimal solutions- 
+1. We transpose the matrix first, then reverse it's row
+2. The 4-Way Swap Logic -> take a temp variable to store the uppermost element and keep swapping elements **Top-Left**`mat[i][j]``mat[0][1]`**Bottom-Left**`mat[k - j][i]``mat[2][0]`**Bottom-Right**`mat[k - i][k - j]``mat[3][2]`**Top-Right**`mat[j][k - i]``mat[1][3]` 
+   - `t = mat[i][j]` — Save **Top-Left**.
+   - `mat[i][j] = mat[k - j][i]` — Move **Bottom-Left** into **Top-Left**.
+   - `mat[k - j][i] = mat[k - i][k - j]` — Move **Bottom-Right** into **Bottom-Left**.
+   - `mat[k - i][k - j] = mat[j][k - i]` — Move **Top-Right** into **Bottom-Right**.
+   - `mat[j][k - i] = t` — Move saved **Top-Left** into **Top-Right**.
+
+Code for 1st approach ->
+
+```
+class Solution {
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        // Step 1: Transpose the matrix (swap matrix[i][j] with matrix[j][i])
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+        // Step 2: Reverse each row
+        for (int i = 0; i < n; i++) {
+            int left = 0, right = n - 1;
+            while (left < right) {
+                int temp = matrix[i][left];
+                matrix[i][left] = matrix[i][right];
+                matrix[i][right] = temp;
+                left++;
+                right--;
+            }
+        }
+    }
+}
+```
+
+Time - O(n^2)   Space - O(1)
+
+Code for 2nd Approach ->
+
+```
+int n = matrix.length, k = n - 1;
+        for (int i = 0; i < n / 2; i++){
+            for (int j = i; j < k - i; j++) {
+                int t = matrix[i][j];
+                matrix[i][j] = matrix[k - j][i];
+                matrix[k - j][i] = matrix[k - i][k - j];
+                matrix[k - i][k - j] = matrix[j][k - i];
+                matrix[j][k - i] = t;
+            }
+        }
+```
+
+Time - O(n^2)  Space - O(1)
