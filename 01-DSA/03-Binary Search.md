@@ -110,3 +110,71 @@ class Solution {
 ```
 
 Time - O(log n)  Space - O(1)
+
+
+## [81. Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii/)
+
+Sol - We modify the fix for the above question with a condition to skip the same elements 
+
+Code Below -> 
+
+```
+class Solution {
+    public boolean search(int[] arr, int k) {
+        int n = arr.length;
+        int low = 0, high = n - 1;
+        while(low <= high){
+            int mid = (low + high) / 2;
+            if(arr[mid] == k) return true;
+            if(arr[low] == arr[mid] && arr[mid] == arr[high]){
+                low++; high--;
+                continue;
+            }
+            if(arr[low] <= arr[mid]){
+                if(arr[low] <= k && k <= arr[mid]) high = mid - 1;
+                else low = mid + 1;
+            }
+            else{
+                if(arr[mid] <= k && k <= arr[high]) low = mid + 1;
+                else high = mid - 1;
+            }
+        }
+        return false;
+    }
+}
+```
+
+Time - O(log n)    Space - O(1)
+
+## [153. Find Minimum in Rotated Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/)
+
+Sol - We run a while loop from low to high and first condition is to check if nums(low) <= nums(high) this means the array is sorted and we can return the first element, or else we check which half of the array is sorted by checking if nums(low) <= nums(mid) this means the left side is sorted, and we take low = mid + 1 and proceed and on each increment we check for the min value with nums(low) and if the right side is sorted then we decrement high = mid - 1 and compare the min for it with nums(min)
+
+Code Below -> 
+
+```
+class Solution {
+    public int findMin(int[] nums) {
+        int low = 0, high = nums.length - 1;
+        int ans = Integer.MAX_VALUE;
+        while(low <= high){
+            int mid = (low + high) >> 1;
+            if(nums[low] <= nums[high]){
+                ans = Math.min(ans, nums[low]);
+                break;
+            }
+            if(nums[low] <= nums[mid]){
+                ans = Math.min(ans, nums[low]);
+                low = mid + 1;
+            }
+            else{
+                high = mid - 1;
+                ans = Math.min(ans, nums[mid]);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(log n)    Space - O(1)
