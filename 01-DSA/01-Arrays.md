@@ -494,3 +494,30 @@ class Solution {
 ```
 
 Time - O(n x m)  Space - O(1)
+
+## [560. Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/)
+
+Sol - Use prefixSum and Hashmap to get the result and how to do it - iterate through the array and keep adding the nums(i) and check in the hashmap if the sum-k (k is the target element) exist in the map and the no of occurrence and increase the cnt according to the no of occurrence
+*Note - Before iterating through the array put in the hashMap (0,1)*
+
+Code Below -> 
+
+```
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        HashMap<Integer, Integer> mpp = new HashMap<>();
+        int preSum = 0;
+        mpp.put(0,1);
+        int cnt = 0;
+        for(int i = 0; i < nums.length; i++){
+            preSum += nums[i];
+            int rem = preSum - k;
+            if(mpp.containsKey(rem)) cnt += mpp.get(rem);
+            mpp.put(preSum, mpp.getOrDefault(preSum,0) + 1);
+        }
+        return cnt;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
