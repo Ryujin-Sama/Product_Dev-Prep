@@ -178,3 +178,58 @@ class Solution {
 ```
 
 Time - O(log n)    Space - O(1)
+
+
+## [540. Single Element in a Sorted Array](https://leetcode.com/problems/single-element-in-a-sorted-array/)
+
+Sol - Modify the Binary Search - We check for the condition where if mid % 2 == 0 or mid % 2 == 1 and if yes we check further check if == 0 then nums(mid) == nums(mid + 1) if  == 1 then check for nums(mid) == nums(mid - 1) if these condition matches then 
+Condition below -> 
+*if((mid % 2 == 0 && nums(mid) == nums(mid + 1)) || (mid % 2 == 1 && nums(mid) == nums(mid - 1)))*
+then left = mid + 1 or else right = mid, at the end return nums(left)
+
+Code Below -> 
+
+```
+class Solution {
+    public int singleNonDuplicate(int[] nums) {
+        int right = nums.length - 1, left = 0;
+        while(left < right){
+            int mid = (left + right) >> 1;
+            if((mid % 2 == 0 && nums[mid] == nums[mid + 1]) || (mid % 2 == 1 && nums[mid] == nums[mid - 1])) left = mid + 1;
+            else right = mid;
+        }
+        return nums[left];
+    }
+}
+```
+
+Time - O(log n)  Space - O(1)
+
+
+## [162. Find Peak Element](https://leetcode.com/problems/find-peak-element/)
+
+Sol - Modify the Binary Search with following conditions. few pre condition if n == 1 then we can check nums(0) and nums(1) and return 0, and nums(n-1) and nums(n-2) and return n-1
+we take  l = 1, and r = n - 2 and run the Binary search with a condition
+*if(nums(m) > nums(m-1) && nums(m) > nums(m+1))* and return m rest if else and else we do the changes for l and r 
+
+Code Below -> 
+```
+class Solution {
+    public int findPeakElement(int[] nums) {
+        int n = nums.length;
+        if(n == 1 || nums[0] > nums[1]) return 0;
+        if(nums[n-1] > nums[n-2]) return n-1;
+        int l = 1, r = n-2;
+        while(l <= r){
+            int m = (l + r) >> 1;
+            if(nums[m] > nums[m-1] && nums[m] > nums[m+1]) return m;
+            else if(nums[m] > nums[m-1]) l = m + 1;
+            else r = m-1;
+        }
+        return 0;
+    }
+}
+```
+
+Time - O(log n)   Space - O(1)
+
