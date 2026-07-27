@@ -521,3 +521,47 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(1)
+
+
+## [118. Pascal's Triangle](https://leetcode.com/problems/pascals-triangle/)
+
+Sol - We use permutation and combination nCr to compute the triangle, we modify the traditional combination formula i.e. n!/r! x (n-r)!  because if we observe closely its just (n x n-1 x n-2 ... x n-r)/r!
+
+So we write a helper function to compute each row of the triangle using the above condition 
+-> *ans = ans * (col - i); ans = ans / (i);* on each iteration it keeps on multiplying and dividing and we add that to the list of list
+
+In Pascal's Triangle, the $i$-th element (0-indexed) of a row $N$ is given by:
+
+$$\binom{N}{i} = \frac{N!}{i!(N-i)!}$$
+
+Notice how each element can be computed sequentially from the previous element:
+
+$$\text{Next Element} = \text{Current Element} \times \frac{\text{Row Index} - i}{i}$$
+
+Code below -> 
+
+```
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(numRows == 0) return res;
+        for(int i = 1; i <= numRows; i++){
+            res.add(pas(i));
+        }
+        return res;
+    }
+    public List<Integer> pas(int col){
+        int ans = 1;
+        List<Integer> result = new ArrayList<>();
+        result.add(ans);
+        for(int i = 1; i < col; i++){
+            ans = ans * (col - i);
+            ans = ans / (i);
+            result.add(ans);
+        }
+        return result;
+    }
+}
+```
+
+Time - O(n ^2)   Space - O(1) *O(n^2) space is to return the ans*
