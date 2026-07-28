@@ -565,3 +565,98 @@ class Solution {
 ```
 
 Time - O(n ^2)   Space - O(1) *O(n^2) space is to return the ans*
+
+
+## [229. Majority Element II](https://leetcode.com/problems/majority-element-ii/)
+
+Sol -> We modify the moore's voting algo in the following way - 
+In moore's voting algo we check for element has more then n/2 occurrences, so on this question we take two elements and two counters with some conditions as follows
+if(cnt1 == 0 && el2 != nums(i)) then cnt1 = 1 and el1 = nums(i)
+else if(cnt2 == 0 && el1 != nums(i)) then cnt2 = 1 and el2 = nums(i)
+rest we follow the same we check if el1 == nums(i) if yes we increment the cnt1 and vice versa and on the else block we decrement both cnt1 and cnt2
+
+Code Below -> 
+
+```
+class Solution {
+    public List<Integer> majorityElement(int[] nums) {
+        int n = nums.length;
+        int cnt1 = 0, cnt2 = 0, el1 = 0, el2 = 0;
+        for (int i = 0; i < n; i++) {
+            if (cnt1 == 0 && el2 != nums[i]) {
+                cnt1 = 1;
+                el1 = nums[i];
+            } else if (cnt2 == 0 && el1 != nums[i]) {
+                cnt2 = 1;
+                el2 = nums[i];
+            } else if (el1 == nums[i])
+                cnt1++;
+            else if (el2 == nums[i])
+                cnt2++;
+            else {
+                cnt1--;
+                cnt2--;
+            }
+        }
+        int maj = (n / 3) + 1;
+        List<Integer> ans = new ArrayList<>();
+        cnt1 = 0;
+        cnt2 = 0;
+        for (int i = 0; i < n; i++) {
+            if (el1 == nums[i])
+                cnt1++;
+            else if (el2 == nums[i])
+                cnt2++;
+        }
+        if (cnt1 >= maj)
+            ans.add(el1);
+        if (cnt2 >= maj)
+            ans.add(el2);
+        return ans;
+    }
+}
+```
+
+Time - O(n)  Space - O(1)
+
+## [15. 3Sum](https://leetcode.com/problems/3sum/)
+
+Sol -> We need to use Two Pointers to solve this question we will do it in the following way -
+we first sort the array, then iterate through the array with i = 0 and check if i >0 and nums(i) == nums(i-1) then continue, and if not we initialize j = i + 1 and k = n - 1 and run a while loop till j < k
+with the conditions that sum = num(i) + nums(j) + nums(k)  and if sum > 0 then we do a k-- and if sum < 0 we do a j++ and we will have a else condition if it matches then we add this triplets to the ans and run a while loop to skip and avoid the similar elements with incrementing j and decrementing k
+
+Code Below - >
+
+```
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;
+            int j = i + 1;
+            int k = nums.length - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum < 0) {
+                    j++;
+                } else if (sum > 0)
+                    k--;
+                else {
+                    ans.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                    j++;
+                    k--;
+                    while (j < k && nums[j] == nums[j - 1])
+                        j++;
+                    while (j < k && nums[k] == nums[k + 1])
+                        k--;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(n ^ 2)  Space - O(1)
