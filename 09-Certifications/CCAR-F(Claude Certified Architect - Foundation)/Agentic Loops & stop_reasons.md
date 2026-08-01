@@ -1,91 +1,101 @@
+# 🤖 Agentic Loop & stop_reason
 
-Create an credit account in Claude and add 5$ and configure API key to the local,
-Create a simple py file to echo using Claude's Haiku model (cheap and less tokens)
-*Py file will be committed in git.*
+## 💳 Setup & Initialization
 
-There are 3 roles - 
-1 - System Role
-2 - User Role
-3 - Assistant Role 
+1. Create a credit account in Claude, add **$5**, and configure the API key locally (`.env`).
+2. Create a simple Python file to echo using Claude's **Haiku model** (cheap and uses fewer tokens).
+3. *Note: Python files will be committed to Git.*
 
-Basically each message or prompt which is associated with any conversation has to be associated with a role
+---
 
-Here user is the end point who asks questions and stuffs, and assistant is the AI tool, IN short whatever we type on the AI tools using GUI it's considered as a User role
-System role is something we ask the AI tool to act as 
+## 🎭 The 3 Roles
 
+Each message or prompt associated with any conversation must be tied to a specific role:
 
-### Chat vs Agents
+* **`1. System Role`** $\rightarrow$ Instructions given to the AI tool to define its persona, constraints, or behavioral context (something we ask the AI tool to act as).
+* **`2. User Role`** $\rightarrow$ The end user asking questions and stuff (whatever we type on the AI tools using GUI is considered a User role).
+* **`3. Assistant Role`** $\rightarrow$ The AI tool itself responding to prompts.
 
-#### Standard Chat 
-User sends a message - Claude responds - Done
+---
 
-#### Agentic Loop
-User sends a message - Claude reasons and act - Code executes tool - Claude gets info and reasons again - goes back to step 1
+## 💬 Chat vs. Agents
 
-This loop repeats until complete
+### Standard Chat
+$$\text{User sends a message} \longrightarrow \text{Claude responds} \longrightarrow \text{Done}$$
 
-An agent acts, observes and decides autonomously. 
+### Agentic Loop
+$$\text{User sends a message} \longrightarrow \text{Claude reasons and acts} \longrightarrow \text{Code executes tool} \longrightarrow \text{Claude gets info and reasons again} \longrightarrow \text{Goes back to Step 1}$$
 
-#### The Agentic loop lifecycle
+> **Key Difference:** An agent acts, observes, and decides **autonomously**. This loop repeats until complete.
 
--> Sends Request (Calls API with messages array + tools)  
--> Inspect stop_reason(check if tool_use or end_turn) 
--> Execute (Run local tool if tool_use)
--> Append (add results to history loop to step 1)
-if end_turn in step 2 the Exit : Return the final answer.
+---
 
-an agent will pause it's execution for a stop_reason and the stop_reason is of two type - tool_use and end_turn, on end_turn it return the answer and on tool_use it will continue the execution
+## 🔄 The Agentic Loop Lifecycle
 
+```text
+[Sends Request] ---> Calls API with messages array + tools
+       │
+[Inspect stop_reason] ---> Check if tool_use or end_turn
+       │
+       ├──> If 'tool_use': Execute (Run local tool) ---> Append (Add results to history) ---> Loop to Step 1
+       │
+       └──> If 'end_turn': Exit                     ---> Return the final answer
+```
 
-#### Why the messages array matters
+> An agent will pause its execution for a `stop_reason`. The `stop_reason` is of two types: `tool_use` and `end_turn`. On `end_turn` it returns the answer, and on `tool_use` it will continue the execution.
 
-The Claude API is 100% Stateless and every API call must include the complete conversation history 
-*Note - The Architect is responsible for state
-Missing tools = Hallucinations
-Mismatched IDs = Broken loops*
+---
 
-#### How the message array grows across iterations
+## 📜 Why the Messages Array Matters
 
-State 1 -> user msg
-State 2 -> user msg -> (Assistant: tool_use)
-State 3 -> user msg -> (Assistant: tool_use) -> user: tool_result
-State 4 -> user msg -> (Assistant: tool_use) -> user: tool_result -> (Assistant: end_turn)
+* The Claude API is **100% Stateless**, and every API call must include the **complete conversation history**.
+* *Note: The Architect is responsible for state.*
+* Missing tools $\rightarrow$ **Hallucinations**
+* Mismatched IDs $\rightarrow$ **Broken loops**
 
-*Rule 1 -> Append BOTH the tool call AND the tool result*
-*Rule 2 -> The tool_use_id MUST perfectly match between them*
+### How the Message Array Grows Across Iterations
 
+* **State 1:** `User Msg`
+* **State 2:** `User Msg` $\rightarrow$ `(Assistant: tool_use)`
+* **State 3:** `User Msg` $\rightarrow$ `(Assistant: tool_use)` $\rightarrow$ `User: tool_result`
+* **State 4:** `User Msg` $\rightarrow$ `(Assistant: tool_use)` $\rightarrow$ `User: tool_result` $\rightarrow$ `(Assistant: end_turn)`
 
-#### The two stop_reason values you need to know
+> **Rule 1:** Append **BOTH** the tool call AND the tool result.  
+> **Rule 2:** The `tool_use_id` **MUST** perfectly match between them.
 
-1. tool_use -> Status : Claude wants to act, Content: Contains tool blocks, Action: Execute tool, append loop again, Rule: Never return this to the user.
-2. end_turn -> Status : Claude has finished, Content: Contains text blocks, Actions: Break Loop, extract text, Rule: This is your final answer.
+---
 
-#### Why the model drives tool selection
+## 🛑 The Two `stop_reason` Values You Need to Know
 
-##### Model-Driven (Agentic)
+| Property | `tool_use` | `end_turn` |
+| :--- | :--- | :--- |
+| **Status** | Claude wants to act | Claude has finished |
+| **Content** | Contains tool blocks | Contains text blocks |
+| **Action** | Execute tool, append result, loop again | Break loop, extract text |
+| **Rule** | **Never return this to the user** | **This is your final answer** |
 
-- Claude reads the full conversation context 
-- Decides which tool to call next based on reasoning
-- Can call tools in any order, skip unnecessary ones.
-- Intelligence lives in the model
+---
 
-##### Pre-Configured (Non -Agentic)
+## 🧠 Why the Model Drives Tool Selection
 
-- Hardcoded if/then configured logic
-- Rigid, fixed sequence of tool execution
-- Fragile when novel situations or requirements change
-- Intelligence lives in the code.
+### 🤖 Model-Driven (Agentic)
+* Claude reads the full conversation context.
+* Decides which tool to call next based on reasoning.
+* Can call tools in any order, skip unnecessary ones.
+* **Intelligence lives in the model.**
 
+### ⚙️ Pre-Configured (Non-Agentic)
+* Hardcoded `if/then` configured logic.
+* Rigid, fixed sequence of tool execution.
+* Fragile when novel situations or requirements change.
+* **Intelligence lives in the code.**
 
-### CHEAT SHEET for this Note
+---
 
-1. ***end_turn*** is the only valid loop exit
-2. ***tool_use*** means execute and continue
-3. Always append assistant first, then user
-4. ***tool_use_id*** must prefectly match
-5. The API is stateless, send full history
+## ⚡ CHEAT SHEET for this Note
 
-
-
-
-
+1. ***`end_turn`*** is the only valid loop exit.
+2. ***`tool_use`*** means execute and continue.
+3. Always append **assistant** first, then **user**.
+4. ***`tool_use_id`*** must perfectly match.
+5. The API is **stateless**, send full history.
