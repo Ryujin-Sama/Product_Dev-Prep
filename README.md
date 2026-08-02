@@ -19,4 +19,5 @@ The codebase is modularly organized into distinct conceptual domains:
 ├── 05-LLD/                # Low-Level Design (LLD), OOP, and Design Patterns
 ├── 06-AI-Dev-Tools/       # AI workflow optimization & prompting engineering
 ├── 07-Projects Doc/       # Technical specifications & active project documentation
-└── 08-Application Tracker/# Interview pipelines and career tracking
+├── 08-Application Tracker/# Interview pipelines and career tracking
+└── 09-Certifications/     # Course Certifications
