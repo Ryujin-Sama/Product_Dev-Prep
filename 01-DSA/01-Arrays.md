@@ -698,3 +698,65 @@ class Solution {
 ```
 
 Time - O(n ^ 3)  Space - O(no of quadruplet)
+
+
+## [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
+
+Sol - First we sort the array, then we take a prev variable which holds the second ele of the previous interval and on each iteration we check if prev >= intervals(i)(0) if yes then we take the max of prev and intervals(i)(1) and update the ans on the list second element and on the else condition we add the current prev to the ans and assign the new intervals block to the prev
+finally return the whole list
+
+Code Below ->
+
+```
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (a,b) -> Integer.compare(a[0], b[0]));
+        List<int[]> ans = new ArrayList<>();
+        int[] prev = intervals[0];
+        for(int i = 1; i < intervals.length; i++){
+            if(intervals[i][0] <= prev[1]){
+                prev[1] = Math.max(prev[1], intervals[i][1]);
+            }
+            else{
+                ans.add(prev);
+                prev = intervals[i];
+            }
+        }
+        ans.add(prev);
+        return ans.toArray(new int[ans.size()][]);
+    }
+}
+```
+
+Time - O(n log n)  Space - O(n)
+
+
+## [88. Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/)
+
+Sol - we take two variables p1 and p2 with both m-1 and n-1 and i as m + n -1 and run a while loop (p2 >= 0 ) and in the condition check for (p1 >= 0 ) and compare the elements if nums1(p1) and num2(p2) if nums1 > nums2 then assign nums1(i) = nums1(p2) it's an empty element and nums1 is the largest of them all.
+else we take the nums2 element on nums1(i) we do a i -- on every assign and p1 and p2 -- on every assign.
+
+Code Below ->
+
+```
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+       int p1 = m - 1;
+       int p2 = n - 1;
+       int i = m + n - 1;
+       while(p2 >= 0){
+        if(p1 >= 0 && nums1[p1] > nums2[p2]){
+            nums1[i] = nums1[p1];
+            p1--;
+        }
+        else{
+            nums1[i] = nums2[p2];
+            p2--;
+        }
+        i--;
+       }
+    }
+}
+```
+
+Time - O(m + n)  Space - O(1)
