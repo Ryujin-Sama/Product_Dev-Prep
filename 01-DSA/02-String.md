@@ -26,3 +26,31 @@ class Solution {
 ```
 
 Time - 0(n)  Space - 0(1)
+
+
+## [242. Valid Anagram](https://leetcode.com/problems/valid-anagram/)
+
+Sol - Using hashing, store the freq of the ch on one iteration and subtract the count in the second iteration, if anagram then the freq should be zero on every ch, if false then return false.
+
+Code Below ->
+
+```
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length() != t.length()) return false;
+        int[] freq  = new int[26];
+        for(int i = 0; i < s.length(); i++){
+            freq[s.charAt(i) - 'a']++;
+        }
+        for(int i = 0; i < t.length(); i++){
+            freq[t.charAt(i) - 'a']--;
+        }
+        for(int i = 0; i < 26; i++){
+            if(freq[i] != 0) return false;
+        }
+        return true;
+    }
+}
+```
+
+Time - O(n)   Space - O(26)
