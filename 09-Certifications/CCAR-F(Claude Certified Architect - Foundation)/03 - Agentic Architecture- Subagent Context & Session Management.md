@@ -1,86 +1,95 @@
+# SubAgent Context & Session Management Architecture
 
-### SubAgent Context
-#### Your SubAgent wakes up Blank
+---
 
-Subagents do not inherit the coordinator's history, prior tool results, previously discovered findings or any intermediate state.
+## 1. SubAgent Context
 
-**The Failure Pattern** : Sending a vague instruction like " synthesize the pervious findings" guarantees hallucinated or generic output because the subagent has zero access to those findings. Every subagent spawned via the tool task starts with an entirely empty context.
+### 1.1 Your SubAgent Wakes Up Blank
+Subagents do not inherit the coordinator's history, prior tool results, previously discovered findings, or any intermediate state.
 
+> **The Failure Pattern:**  
+> Sending a vague instruction like *"synthesize the previous findings"* guarantees hallucinated or generic output because the subagent has zero access to those findings. Every subagent spawned via the tool task starts with an entirely empty context.
 
-#### Why Prose Handoffs Fails
+---
 
-**Attribution loss** - Source attribution is silently dropped during summarization.
+### 1.2 Why Prose Handoffs Fail
 
-**Architectural Rule** - Summarization naturally destroys metadata unless the output schema explicitly forbids it.
-Mixing findings as plain prose destroys the ability to route or verify them programmatically downstream.
+* **Attribution Loss:** Source attribution is silently dropped during summarization.
+* **Architectural Rule:** Summarization naturally destroys metadata unless the output schema explicitly forbids it. Mixing findings as plain prose destroys the ability to route or verify them programmatically downstream.
 
-*Fix for the above problem*
+#### Fix for the Above Problem
 
-#### Preserving Provenance: Claim-Source Mappings
+##### A. Preserving Provenance: Claim-Source Mappings
+* **Core Mechanism:** Every finding is stored as a specific claim object permanently linked to a source object via a shared ID.
+* **Exam-Critical Rule:** Every synthesis step in the pipeline **MUST** output both arrays intact. If the synthesis agent consumes structured data but outputs prose, the provenance chain is broken.
 
-**Core Mechanism** : Every finding is stored as a specific claim object permanently linked to a source object via a shared ID.
+##### B. Resolving Reality Clashes
+* We shouldn't let a subagent silently resolve conflict; always annotate it and send it to the coordinator to resolve the conflict.
+* Add a **conflict object** with both claims explicitly annotated.
+* Mark the resolution state as `"unresolved"`.
+* Escalate the conflict back to the coordinator to make the final decision.
 
-**Exam-Critical Rule** : Every synthesis step in the pipeline MUST output both arrays intact. If the synthesis agent consumes structured data but outputs prose, the provenance chain is broken.
+---
 
-#### Resolving Reality Clashes
+## 2. Session Management
 
-We shouldn't let a subagent silently resolve conflict always annotate it and send it to the coordinator to resolve the conflict.
+### 2.1 Managing State Across Time
+Claude loses context of the problems sometimes, and in order to resolve that we need three core patterns for session continuity:
 
-Add a conflict object with both claims explicitly annotated.
-Mark the resolution state as "unresolved".
-Escalate the conflict back to the coordinator to make the final decision.
+1. **Named Session Resumption**  
+   We need to start the session with a name, e.g., `claude --session-name ""` and to resume the same session use `claude --resume ""`, and in case to resume the latest session then can run with `claude --resume`.  
+   *Rule:* Never resume the session without explicitly stating what were the changes.
 
+2. **Forked Session**  
+   We give a baseline session and start a session from there with a different approach. For this we can have $n$ number of approaches and branches, but a baseline session is needed to create a fork session.
 
-### Session Management
+3. **Fresh Session**  
+   We start a fresh session when it's impossible to work and it's pretty messed up. We give a structured summary to a new session to begin.  
+   Basically, when tool results are fundamentally stale, resuming it is actively counterproductive. Start fresh, but compress prior findings into an injected summary in the initial prompt.  
+   * **Critical Framing Rule:** The prompt must frame the injected summary as *'hypotheses to validate not an established fact'*. This psychological cue prevents the model from blindly accepting information that may have changed.
 
-#### Managing State Across Time
+---
 
-Claude loses context of the problems sometimes and inorder to resolve that we need to three core patterns for session continuity
+### 2.2 The Session Routing Diagnosis
 
-**Named Session Resumption** - we need to start the session with a name eg - *claude --session-name ""* and to resume the same session use *claude --resume ""* and incase to resume the latest session then can run with *claude --resume* 
-never resume the session without explicitly stating what were the changes
+| Current Context State | Code Base Volatility | Required Action |
+| :--- | :--- | :--- |
+| Context is valid / Shared | Zero / Low Volatility | Use `--resume` + explicitly state updates. |
+| Need Parallel exploration | Shared Baseline Context | Use `fork_session()`. |
+| Tool results are stale | High volatility time passed | Use fresh session + inject structured hypothesis |
 
-**Forked Session** - We give a base line session and started a session from there with an different approach, for this we can have n no of approach and branch, but a baseline session is needed to create a fork session
+---
 
-**Fresh Session** - We start a fresh session when it's impossible to work and it's pretty messed up, we give a Structured summary to a new session to begin
-Basically when tool results are fundamentally stale, resuming it actively counterproductive. Start fresh, but compress prior findings into a injected summary in the initial prompt.
+### 2.3 Session Management Action Flowchart
 
-*Critical Framing Rule* - The prompt must frame the injected summary as 'hypotheses to validate not a established fact'. This psychological cue prevents the model from blindly accepting information that may have changed.
+```text
+Are existing tool results fundamentally stale?
+  │
+  ├──► [Yes] ──► Start New session + inject Hypothesis
+  │
+  └──► [No]
+         │
+         ├──► Are we comparing new, parallel architectures?
+         │      │
+         │      ├──► [Yes] ──► Execute fork_session()
+         │      │
+         │      └──► [No]
+         │             │
+         │             └──► Continuing the exact same sequential task?
+         │                    │
+         │                    └──► [Yes] ──► Execute --resume and explicitly inform agent of specific file changes.
+```
 
-##### The Session Routing Diagnosis
+---
 
-Current Context State - Context is valid/Shared, Code Base Volatility - Zero/Low Volatility
-Required Action - Use --resume + explicitly state updates.
+## 3. Exam Critical Facts Summary
 
-Current Context State - Need Parallel exploration, Code Base Volatility - Shared Baseline Context Required Action - Use fork_session().
-
-Current Context State -Tool results are stale, Code Base Volatility - High volatility time passed. Required Action - Use fresh session + inject structured hypothesis
-
-
-##### Session Management Action Flowchart
-
-Are existing tool results fundamentally stale ?    -> Yes   -> Start New session + inject Hypothesis
-                |
-                No
-				|
-Are we comparing new, parallel architectures ?   -> Yes   -> Execute fork_session()
-				|
-				No
-				|
-Continuing the exact same sequential task?
-				|
-				 Yes
-				|
-Execute --resume and explicitly inform agent of specific file changes.
-
-### Exam Critical Facts Summary
-
-- Context is empty by default
-- Pass findings as structured objects
-- Require source_url, retrived_at, confidence.
-- Preserve claim-source mapping arrays
-- Unresolved conflicts strictly escalate to coordinator
-- --resume requires explicit manual context updates.
-- fork_session() is for parallel explorations only
-- Stale tool results mandate a Fresh session
-- Injected prior findings must be framed a hypotheses.
+* Context is empty by default
+* Pass findings as structured objects
+* Require `source_url`, `retrieved_at`, `confidence`
+* Preserve claim-source mapping arrays
+* Unresolved conflicts strictly escalate to coordinator
+* `--resume` requires explicit manual context updates
+* `fork_session()` is for parallel explorations only
+* Stale tool results mandate a Fresh session
+* Injected prior findings must be framed as hypotheses
