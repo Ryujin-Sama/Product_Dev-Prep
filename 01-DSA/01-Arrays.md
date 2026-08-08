@@ -809,3 +809,30 @@ class Solution {
 ```
 
 Time - O(n Log n)  Space - O(n)
+
+## [152. Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/)
+
+Sol - Two optimal fixes, use Kadane's algo a bit of variation of it, or else use prefix suffix 
+keep on multiplying from i = 0 to n for prefix and for suffix keep on multiplying from n- 1 to 0 and keep on updating max on each traversal
+
+Code Below ->
+
+```
+class Solution {
+    public int maxProduct(int[] nums) {
+        int pre = 1, suf = 1;
+        int n = nums.length;
+        int maxi = Integer.MIN_VALUE;
+        for(int i = 0; i < n; i++){
+            if(pre == 0) pre = 1;
+            if(suf == 0) suf = 1;
+            pre *= nums[i];
+            suf *= nums[n-i-1];
+            maxi = Math.max(maxi, Math.max(suf,pre));
+        }
+        return maxi;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
