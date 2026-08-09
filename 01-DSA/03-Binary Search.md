@@ -233,3 +233,49 @@ class Solution {
 
 Time - O(log n)   Space - O(1)
 
+## [1482. Minimum Number of Days to Make m Bouquets](https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/)
+
+Sol - We use Binary search, find the min and max from the array and use binary search on min and max, and run a inner loop to find if it's possible to make the bonquest 
+
+Code Below ->
+
+```
+class Solution {
+    public boolean possible(int[] bloomDay, int mid, int m, int k){
+        int cnt = 0;
+        int bcnt = 0;
+        for(int day: bloomDay){
+            if(day <= mid){
+                cnt++;
+                if(cnt == k){
+                    bcnt++;
+                    cnt = 0;
+                }
+            }
+            else cnt = 0;
+        }
+        return bcnt >= m;
+    }
+
+    public int minDays(int[] bloomDay, int m, int k) {
+        if((long)m * k > bloomDay.length) return -1;
+        int s = Integer.MAX_VALUE, e = Integer.MIN_VALUE;
+        for(int day: bloomDay){
+            s = Math.min(s, day);
+            e = Math.max(e, day);
+        }
+        int ans = -1;
+        while(s <= e){
+            int mid = (s+e)/2;
+            if(possible(bloomDay, mid, m, k)){
+                ans = mid;
+                e = mid - 1;
+            }
+            else s = mid + 1;
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(n log (max-min+1))  Space - O(1)
