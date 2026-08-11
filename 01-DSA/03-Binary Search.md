@@ -279,3 +279,86 @@ class Solution {
 ```
 
 Time - O(n log (max-min+1))  Space - O(1)
+
+
+## [1283. Find the Smallest Divisor Given a Threshold](https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/)
+
+Sol - We solve it using Binary search by modifying few things, we run the BS from 1 to max element in the array
+and update the ans with the mid and keep doing max = mid - 1 or else min = mid + 1
+
+Code Below ->
+
+```
+class Solution {
+    public boolean possible(int[] nums, int mid, int threshold){
+        int sum = 0;
+        for(int i = 0; i < nums.length; i++){
+            sum += (nums[i] + mid - 1)/mid;
+        }
+        if(sum <= threshold) return true;
+        return false;
+    }
+
+    public int smallestDivisor(int[] nums, int threshold) {
+        int max = Integer.MIN_VALUE, min = 1;
+        for(int i = 0; i < nums.length; i++){
+            max = Math.max(max, nums[i]);
+        }
+        int ans = max;
+        while(max >= min){
+            int mid = (max + min)/2;
+            if(possible(nums, mid, threshold)){
+                ans = mid;
+                max = mid - 1;
+            }
+            else min = mid + 1;
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(n log(max element in the array))   Space - O(1)
+
+
+## [1011. Capacity To Ship Packages Within D Days](https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/)
+
+Sol - Use BS with the changes as follows -> we take low as the max weight in the array and high as the total weight of the array and check if ship capacity can transport within the given days then max = mid - 1, or else min = mid + 1
+
+Code Below ->
+
+```
+class Solution {
+    private boolean possible(int[] weights, int days, int mid){
+        int cnt = 1, sum = 0;
+        for(int i = 0; i < weights.length; i++){
+            if(sum + weights[i] > mid){
+                cnt++;
+                sum = weights[i];
+            }
+            else sum += weights[i];
+        }
+        return cnt <= days;
+    }
+
+    public int shipWithinDays(int[] weights, int days) {
+        int max = -1, total = 0;
+        for(int i = 0; i < weights.length; i++){
+            max = Math.max(max, weights[i]);
+            total += weights[i];
+        }
+        int ans = total;
+        while(max <= total){
+            int mid = (max + total)/2;
+            if(possible(weights, days, mid)){
+                ans = mid;
+                total = mid - 1;
+            }
+            else max = mid + 1;
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(n log (sum of all weights - max weights in the array))   Space - O(1)
