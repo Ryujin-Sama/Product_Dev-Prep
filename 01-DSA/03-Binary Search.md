@@ -362,3 +362,35 @@ class Solution {
 ```
 
 Time - O(n log (sum of all weights - max weights in the array))   Space - O(1)
+
+
+## [1539. Kth Missing Positive Number](https://leetcode.com/problems/kth-missing-positive-number/)
+
+Sol - Use BS on index and add a condition if arr(mid) - mid - 1 < k then increment low  = mid + 1 or else high = mid - 1, in the end return low + k
+
+Code Below ->
+
+```
+class Solution {
+    public int findKthPositive(int[] arr, int k) {
+        int n = arr.length;
+        int low = 0, high = n-1;
+        while(low <= high){
+            int mid = (low + high)/2;
+            if(arr[mid] - mid - 1 < k) low = mid + 1;
+            else high = mid - 1;
+        }
+        return low + k;
+
+        // For TC - O(n) below code
+        // int cnt = 0;
+        // for(int i = 0; i < arr.length; i++){
+        //     if(arr[i] <= k) k++;
+        //     else break;
+        // }
+        // return k;
+    }
+}
+```
+
+Time - O(log n)   Space - O(1)
