@@ -394,3 +394,96 @@ class Solution {
 ```
 
 Time - O(log n)   Space - O(1)
+
+## [410. Split Array Largest Sum](https://leetcode.com/problems/split-array-largest-sum/)
+
+Sol - Use BS with the following conditions - use low as max element in the array and high as the total sum of the array
+and we if count > k then low = mid + 1 else max = mid - 1
+
+Code Below ->
+
+```
+class Solution {
+    public boolean possible(int[] nums, int m, int k){
+        int n = nums.length;
+        int cnt = 1, sum = 0;
+        for(int i = 0; i < n; i++){
+            if(sum + nums[i] <= m) sum += nums[i];
+            else{
+                cnt++;
+                sum = nums[i];
+            }
+        }
+        return cnt > k;
+    }
+
+    public int splitArray(int[] nums, int k) {
+        int n = nums.length;
+        if(n < k) return -1;
+        int low = Integer.MIN_VALUE, max = 0;
+        for(int i = 0; i < n; i++){
+            max += nums[i];
+            low = Math.max(low, nums[i]);
+        }
+        while(low <= max){
+            int mid = (low + max)/2;
+            if(possible(nums, mid, k)){
+                low = mid + 1;
+            }
+            else max = mid - 1;
+        }
+        return low;
+    }
+}
+```
+
+Time - O(n log(sum - max))   Space - O(1)
+
+
+## [4. Median of Two Sorted Arrays](https://leetcode.com/problems/median-of-two-sorted-arrays/)
+
+Sol - Use BS on the shortest length array 
+- **Core Idea:** Binary search for a partition cut in the smaller array (`nums1`) that splits both arrays into equal left and right halves.
+    
+- **Boundary Check:** Define border variables $l_1, r_1$ for `nums1` and $l_2, r_2$ for `nums2` around the partition lines.
+    
+- **Validity Condition:** The cut is valid when **$l_1 \le r_2$** and **$l_2 \le r_1$** (every element on the left side is $\le$ every element on the right).
+    
+- **Adjusting Bounds:** If $l_1 > r_2$, move the search window left (`high = mid1 - 1`); if $l_2 > r_1$, move right (`low = mid1 + 1`).
+    
+- **Final Result:** If total size is odd, return $\max(l_1, l_2)$; if even, return $\frac{\max(l_1, l_2) + \min(r_1, r_2)}{2.0}$.
+
+Code Below ->
+
+```
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int n1 = nums1.length;
+        int n2 = nums2.length;
+        if(n1 > n2) return findMedianSortedArrays(nums2, nums1);
+
+        int low = 0, high = n1, left = (n1 + n2 + 1)/2;
+        while(low <= high){
+            int mid1 = (low + high)/2;
+            int mid2 = left - mid1;
+            int l1 = Integer.MIN_VALUE, l2 = Integer.MIN_VALUE;
+            int r1 = Integer.MAX_VALUE, r2 = Integer.MAX_VALUE;
+
+            if(mid1 < n1) r1 = nums1[mid1];
+            if(mid2 < n2) r2 = nums2[mid2];
+            if(mid1 - 1 >= 0) l1 = nums1[mid1-1];
+            if(mid2 - 1 >= 0) l2 = nums2[mid2-1];
+
+            if(l1 <= r2 && l2 <= r1){
+                if((n1 + n2) % 2 == 1) return Math.max(l1,l2);
+                return (double)(Math.max(l1,l2) + Math.min(r1,r2)) / 2.0;
+            }
+            else if(l1 > r2) high = mid1 - 1;
+            else low = mid1 + 1;
+        }
+        return 0;
+    }
+}
+```
+
+TC - $\mathcal{O}(\log(\min(n_1, n_2)))$     Space - O(1)
