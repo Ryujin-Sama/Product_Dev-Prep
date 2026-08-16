@@ -487,3 +487,31 @@ class Solution {
 ```
 
 TC - $\mathcal{O}(\log(\min(n_1, n_2)))$     Space - O(1)
+
+
+## [74. Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/)
+
+Sol - Use BS but we need to apply some condition since it's a 2D matrix what we can do is, first we need to visualize it's a 1D array and set l = 0, and h = n x m, and to find the mid value index we apply the formula - midval = matrix(mid/m)(mid%m) -> this gives the midval index then we can do the usual BS
+
+Code Below ->
+
+```
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int l = 0, h = n * m - 1;
+
+        while(l <= h){
+            int mid = (l + h)/2;
+            int midval = matrix[mid/m][mid%m];
+            if(midval > target) h = mid - 1;
+            else if(midval == target) return true;
+            else l = mid + 1;
+        }
+        return false;
+    }
+}
+```
+
+Time - O(log(n x m))   Space - O(1)
