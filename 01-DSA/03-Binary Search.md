@@ -515,3 +515,73 @@ class Solution {
 ```
 
 Time - O(log(n x m))   Space - O(1)
+
+
+## [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/)
+
+Sol - we use BS but it's a bit different , we start from either row = n - 1 or col = m - 1 and if the taken element is > target then we do a col-- and if less then a row ++
+
+Code Below ->
+
+```
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+
+        int row = 0, col = m-1;
+        while(row < n && col >= 0){
+            if(matrix[row][col] == target) return true;
+            else if(matrix[row][col] > target) col--;
+            else row++;
+        }
+        return false;
+    }
+}
+```
+
+Time - O(m + n)    Space - O(n)
+
+
+## [1901. Find a Peak Element II](https://leetcode.com/problems/find-a-peak-element-ii/)
+
+Sol - Using BS, we modify a bit, so we take l = 0, h = m - 1, and take the mid and check for the max value in that column and check it's left and right if it's the greatest then we return the row and col of the same or else if the right side has a greater element then we move l = mid + 1, else h = mid - 1,
+
+Code Below ->
+
+```
+class Solution {
+
+    private int maxi(int[][] mat, int n, int m, int mid){
+
+        int maxval = -1;
+        int ind = -1;
+        for(int i = 0; i < n; i++){
+            if(mat[i][mid] > maxval){
+                maxval = mat[i][mid];
+                ind = i;
+            }
+        }
+        return ind;
+    }
+
+    public int[] findPeakGrid(int[][] mat) {
+
+        int n = mat.length, m = mat[0].length;
+        int l = 0, h = m - 1;
+        while(l <= h){
+            int mid = (l + h) >> 1;
+            int maxval = maxi(mat, n, m, mid);
+            int left = mid - 1 >= 0 ? mat[maxval][mid - 1] : -1;
+            int right = mid + 1 < m ? mat[maxval][mid + 1] : -1;
+
+            if(mat[maxval][mid] > left && mat[maxval][mid] > right) return new int[]{maxval, mid};
+            else if(mat[maxval][mid] < left) h = mid - 1;
+            else l = mid + 1;
+        }
+        return new int[]{-1,-1};
+    }
+}
+```
+
+Time - O(n x Log m)    Space - O(1)
