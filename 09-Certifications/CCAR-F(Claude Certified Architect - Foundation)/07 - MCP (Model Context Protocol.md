@@ -1,87 +1,117 @@
+An open protocol connecting AI models to external tools, contextual data, and custom workflows. MCP standardizes how applications expose capabilities and how models discover and invoke them.
 
-### What is MCP
+---
 
-An Open protocol connecting AI to tools, data and workflows, Standardizes how applications expose capabilities and how models discover and invoke them.
+## 🛠️ Core Primitives
 
-Tools - Atomic operations exposed by servers, Described by name, schema & description, invoked via tools/call,
+* **Tools (Atomic Operations)**
+  * Executable functions invoked via `tools/call` with strict input schemas.
+  * **Use case:** Dynamic actions, searches, database writes, and API lookups.
+* **Resources (Contextual Data)**
+  * Static or dynamic data sources accessed via `resources/list` and `resources/read`.
+  * **Use case:** Documentation, codebases, file systems, and real-time event subscriptions.
+* **Prompts (Reusable Templates)**
+  * Standardized prompt shortcuts listed via `prompts/list` and retrieved via `prompts/get`.
+  * **Use case:** Team-wide prompt patterns and structured workflows.
 
-Resources - Contextual data(files, docs, etc), Discover via resources/list & read. Supports live update & subscribe.
+---
 
-Prompts - Reusable prompt templates list with prompts/list. Retrieve via prompts/get.
+## 🏗️ Architecture & Communication Flow
 
-### MCP Architecture
+```
++-------------------------------------------------------------+
+| Host Environment (AI App / Agent Logic)                     |
+|  └── MCP Client (Library handling connection & JSON-RPC)    |
++------------------------------------+------------------------+
+                                     |
+                          JSON-RPC 2.0 Protocol
+                                     |
++------------------------------------+------------------------+
+| MCP Server (Exposes Tools, Resources, and Prompts)          |
++-------------------------------------------------------------+
+```
 
-Host -> MCP Client -> MCP server
+### Execution Lifecycle
+1. **Connect:** Client initiates transport channel to the server.
+2. **Initialize:** Capabilities and protocol versions are negotiated.
+3. **Discover:** Client fetches available tools, resources, and prompts.
+4. **Reason:** The AI agent analyzes available tool metadata against the task.
+5. **Call:** Host triggers `tools/call` or `resources/read`.
+6. **Respond:** Server executes the underlying operation and returns structured data.
 
-Host - AI environment & agent logic
-MCP Client -> Library implementing the protocol handles connect, initialize, call
-MCP server -> Exposes tools, resources & prompt Runs remote operations.
+---
 
-The host calls into the MCP Client, which speaks JSON-RPC with the server, Tools, resources & prompt live on the server.
+## ⚙️ Transport Modes & Configuration
 
+Where your server lives dictates its transport mechanism:
 
-### How agents communicate with MCP
+| Transport Type | Configuration Key | Best For |
+| :--- | :--- | :--- |
+| **Stdio Subprocess** | `command`, `args` | Local CLI tools, scripts, and `npx` packages |
+| **HTTP / SSE** | `url` | Hosted endpoints, remote microservices, and cloud APIs |
 
-Connect - Initialize - Discover - Reason - Call - Respond
+### Scope & Storage Boundaries
 
-Connect & initialize to establish context, discover available tools, reason over metadata and input, then invoke a tool and consume it's response.
+* **Project Scope (`.mcp.json`)**
+  * Placed at the repository root and committed to version control.
+  * Shared across the entire development team.
+* **User Scope (`~/.claude.json`)**
+  * Stored in the user home directory and kept strictly private.
+  * Used for personal authentication tokens, local path overrides, and custom preferences.
 
-### Two Scopes, Two Philosophies
+#### Example Configuration (`.mcp.json`)
 
-.mcp.json -> Lives at repo root, committed to git, shares team-wide tools
-~/ .claude.json -> Lives in home directory, Absolutely never shared, Stores personal tokens/preference 
-
-Inside .mcp.json file
-
-Local Subprocess ->
-"mcpServers" : {
-	"my-local-repo" : {
-		"command"	: "npx",
-		"args" :("-y", "local-packages")
-	}
+```json
+{
+  "mcpServers": {
+    "local-dev-tools": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/files"]
+    },
+    "remote-internal-api": {
+      "url": "https://api.internal.corp/mcp",
+      "headers": {
+        "Authorization": "Bearer ${CORPORATE_API_KEY}"
+      }
+    }
+  }
 }
-Stdio Server - Claude spawns a local subprocess via standard input/output (best for local packages/tools)
+```
 
-Remote Network Endpoint
-"mcpServers" : {
-	"my-remote-tool" : {
-		"url" : "https://api.internal.corp/mcp"
-	}
-}
+---
 
-HTTP/SSE servers: Claude acts as a client connecting to a remote network URL (best for hosted APIs/ cloud service)
+## 💡 Key Architectural Distinctions
 
-*The above choice is driven by where the server lives and not what the server does.*
+### Tools vs. Resources (Token Optimization)
 
-### MCP resources: The Context Shortcut
+* **Tools:** High flexibility, dynamic execution, higher token consumption (requires multi-step LLM reasoning loops).
+* **Resources:** Pre-mapped structured context, direct navigation, lower token consumption.
 
-Tools (Dynamic Actions) : Executable functions based on runtime inputs(searches , write operations, lookups)  - burns huge amount of tokens
+### Community vs. Custom Servers
 
-Resources(Content Catalogs) - Upfront maps of static data(docs, templates), claude navigates directly saving tokens. 
+| Attribute | Community Servers | Custom Servers |
+| :--- | :--- | :--- |
+| **Target Use Case** | Standard SaaS, public APIs, general databases | Proprietary internal systems & legacy infra |
+| **Deployment Time** | Minutes (`npx` / pre-built binaries) | Days/Weeks (Built from scratch via SDKs) |
+| **Maintenance** | Open-source community | In-house engineering team |
+| **Authentication** | Standard API Keys / OAuth | Custom headers, internal IAM, enterprise SSO |
 
-### Community vs Custom Servers
+---
 
-Community Server -
-		Service type - Standard
-		Deploy time - Deploy in minutes
-		Maintenance - Community maintained
-		Description - Generic
+## 🎯 Architectural Decision Framework
 
-Custom Server -
-		Service type - Proprietary internal systems
-		Deploy time - Build from scratch
-		Maintenance - You own it
-		Description  - Custom Auth required
+```
+Is the capability shared team-wide?
+ ├── YES ──> Save in .mcp.json at repo root
+ └── NO  ──> Save in ~/.claude.json
 
+Does the tool require sensitive API keys?
+ └── YES ──> Use environment variable expansion syntax: ${ENV_VAR}
 
-### Decision Framework
+Is the target data static or read-only?
+ ├── YES ──> Expose as a Resource (saves tokens)
+ └── NO  ──> Expose as a Tool (dynamic operations)
 
-Shared ---> use .mcp.json instead of ~/. claude.json
-   |
-Secrets ? ---> Utilize ${VAR_NAME} expansion syntax.
-   |
-Static Contents? ---> Resources - map via MCP resources not tools.
-   |
-Standard Services ---> Community + Overrides - Deploy community server + enhanced descriptions
-   |
-Wrong Tool Chosen ---> Rewrite Description - Fix description first, examples second.
+Is the LLM selecting the wrong tool?
+ ├── 1. Rewrite the tool `description` field with explicit guidance
+ └── 2. Add detailed usage examples in parameter descriptions
