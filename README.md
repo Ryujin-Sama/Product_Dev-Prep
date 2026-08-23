@@ -11,7 +11,6 @@ This repository functions as an Obsidian vault, backed up automatically using Gi
 The codebase is modularly organized into distinct conceptual domains:
 
 ```text
-├── 00-MOC/                # Maps of Content (Index & Navigation Dashboards)
 ├── 01-DSA/                # Data Structures & Algorithms implementations (Java)
 ├── 02-Java Fundamentals/  # Core Java, JVM internals, and Concurrency
 ├── 03-Spring Boot/        # Backend services, REST APIs, and Microservices
