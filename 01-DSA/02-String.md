@@ -102,3 +102,48 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(1)
+
+## [205. Isomorphic Strings](https://leetcode.com/problems/isomorphic-strings/)
+
+Sol - We kind of map between 2 strings and check the incremented value is same for the character and if different we return false
+
+Code Below ->
+
+```
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        int[] s1 = new int[256], s2 = new int[256];
+        for(int i = 0; i < s.length(); i++){
+            if(s1[s.charAt(i)] != s2[t.charAt(i)]) return false;
+            s1[s.charAt(i)] = i + 1;
+            s2[t.charAt(i)] = i + 1;
+        }
+        return true;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
+
+## [796. Rotate String](https://leetcode.com/problems/rotate-string/)
+
+Sol - Concatenate both the string and search in the string.
+
+Code Below ->
+
+```
+class Solution {
+    public boolean rotateString(String s, String goal) {
+        if(s.length() != goal.length()) return false;
+        // for(int i = 0; i < s.length(); i++){
+        //     String rot = s.substring(i) + s.substring(0, i);
+        //     if(rot.equals(goal)) return true;
+        // }
+        String rot = s + s;
+        if(rot.contains(goal)) return true;
+        return false;
+    }
+}
+```
+
+Time - O(1)   Space - O(1)
