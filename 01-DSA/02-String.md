@@ -147,3 +147,67 @@ class Solution {
 ```
 
 Time - O(1)   Space - O(1)
+
+
+## [451. Sort Characters By Frequency](https://leetcode.com/problems/sort-characters-by-frequency/)
+
+Sol - There are multiple solution 
+1. Using hashmap and priority queue -> we iterate through an array and count the frequency and then implement a priority queue with a lambda function to make it max heap wise so that the max size char stays at top, then we using stringbuilder we pop every element and add it the no of times it has the frequency  TC - (O(n log k))  Space - O(K) k is the no of unique element
+2. Using Frequency map array -> we take the frequency array with freq(128) and keep on increasing the count of each letter and then we iterate again on the freq array with max count first and keep on appending it the no of times it appears TC - O(n x k)  Space - O(128)
+
+Code Below -> 
+1. 
+```
+ class Solution {
+
+    public String frequencySort(String s) {
+
+        Map<Character, Integer> freq = new HashMap<>();
+        for(char c : s.toCharArray()) freq.put(c, freq.getOrDefault(c,0) + 1);
+        PriorityQueue<Map.Entry<Character,Integer>> pq = new PriorityQueue<>( (a, b) -> b.getValue() - a.getValue());
+
+        pq.addAll(freq.entrySet());
+        StringBuilder res = new StringBuilder();
+        while(!pq.isEmpty()){
+            Map.Entry<Character, Integer> entry = pq.poll();
+            res.append(String.valueOf(entry.getKey()).repeat(entry.getValue()));
+        }
+        return res.toString();
+    }
+}
+```
+
+2. 
+```
+ class Solution {
+
+    public String frequencySort(String s) {
+        StringBuilder sb = new StringBuilder();
+        int[] freq = new int[128];
+        int n = s.length();
+
+        for (int i = 0; i < n; i++) {
+            freq[s.charAt(i)]++;
+        }
+
+        while (sb.length() < n) {
+            int max = 0;
+
+            for (int i = 1; i < 128; i++) {
+                if (freq[i] > freq[max]) {
+                    max = i;
+                }
+            }
+
+            for (int i = 0; i < freq[max]; i++) {
+                sb.append((char) max);
+            }
+            freq[max] = 0;
+        }
+        return sb.toString();
+    }
+}
+```
+
+1.  Time - O(n Log K)   Space - O(k)  k is the no of unique elements
+2.  Time - O(n)  Space - O(128)
