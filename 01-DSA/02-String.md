@@ -211,3 +211,28 @@ Code Below ->
 
 1.  Time - O(n Log K)   Space - O(k)  k is the no of unique elements
 2.  Time - O(n)  Space - O(128)
+
+## [1614. Maximum Nesting Depth of the Parentheses](https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/)
+
+Sol - we keep the cnt and ans and on each char each if '(' the cnt++ and if ')' then we do a cnt--
+and keep the max count in the ans.
+
+Code Below ->
+
+```
+class Solution {
+    public int maxDepth(String s) {
+        int cnt = 0, ans = 0;
+        for(char ch: s.toCharArray()){
+
+            if(ch == '(')cnt++;
+            else if(ch == ')') cnt--;
+            ans = Math.max(cnt, ans);
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
+
