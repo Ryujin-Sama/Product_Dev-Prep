@@ -236,3 +236,27 @@ class Solution {
 
 Time - O(n)   Space - O(1)
 
+
+## [13. Roman to Integer](https://leetcode.com/problems/roman-to-integer/)
+
+Sol - Keep a map DS and keep the entry of all the roman numerals and traverse through the string with conditions of if the current value is less then the next value then subtract  the numbers and if it's more then the next then keep adding the same.
+
+Code Below ->
+
+```
+class Solution {
+    public int romanToInt(String s) {
+       Map<Character, Integer> mpp = Map.of('I', 1, 'V', 5, 'X', 10, 'L', 50, 'C', 100, 'D', 500, 'M', 1000);
+       int res = 0;
+       for(int i = 0; i < s.length(); i++){
+	        int curr = mpp.get(s.charAt(i));
+	        int next = (i + 1 < s.length()) ? mpp.get(s.charAt(i + 1)) : 0;
+	        if(curr < next) res -= curr;
+	        else res += curr;
+       }
+        return res;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
