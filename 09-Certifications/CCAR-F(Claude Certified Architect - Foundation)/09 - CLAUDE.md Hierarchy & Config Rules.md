@@ -1,34 +1,43 @@
+# Comprehensive Guide to CLAUDE.md & Rules Setup
 
-### What CLAUDE.md Actually is ?
+`CLAUDE.md` serves as persistent context loaded before every session. Claude reads this briefing document before your first message, essentially functioning as project-level intelligence.
 
-It's the persistent context loaded before every session. Claude reads it before your first message, It's a briefing document, basically a project-level Claude intelligence.
+---
 
-#### The Three-level Hierarchy
+## 🏗️ 1. The Three-Level Hierarchy
 
-1. User - ~/.claude/CLAUDE.md  - No Scope, All your projects
-2. Project - .claude/CLAUDE.md  - This is project level and for all teammates.
-3. Directory - any-subdir/CLAUDE.md - That particular directory + children.
+| Level | File Path | Scope & Purpose |
+| :--- | :--- | :--- |
+| **User** | `~/.claude/CLAUDE.md` | **Global:** Applies across all your local projects. |
+| **Project** | `.claude/CLAUDE.md` | **Repository-wide:** Shared with all project collaborators. |
+| **Directory** | `any-subdir/CLAUDE.md` | **Scoped:** Applies only to the specific directory and its subdirectories. |
 
-Keep it clean with @import statement of other .md files instead of clubbing everything into the same CLAUDE.md file.
+> **Pro Tip:** Keep your root `CLAUDE.md` clean. Use `@import` statements to pull in external `.md` files instead of cramming all configuration into a single file.
 
-### The .claude/rules Directory
+---
 
-#### Path-Specific Rules with YAML Frontmatter
+## 🎯 2. The `.claude/rules` Directory
 
-Claude scans repo -> Decision Gate - Does path: matches the current file? - If yes then inject YAML Rules, if no then BYPASS the rule.
+### Path-Specific Execution Engine
 
-#### Glob Patterns
+```
+Claude Scans Repo ──► Decision Gate: Does `paths:` match current file?
+                        ├── YES ──► Inject YAML Rules
+                        └── NO  ──► Bypass Rule
+```
 
-##### Syntax Data Table
+### Glob Pattern Reference Table
 
+| Syntax | Target Scope |
+| :--- | :--- |
+| `terraform/**/*` | All files under `terraform/` at any depth |
+| `**/*.test.tsx` | Any `.test.tsx` file anywhere in the project |
+| `**/*.spec.ts` | Any `.spec.ts` file anywhere in the project |
+| `src/api/*.ts` | `.ts` files directly in `src/api/` (excludes deeper subdirectories) |
+| `**/*.{ts,tsx}` | All `.ts` and `.tsx` files anywhere in the project |
 
-| Syntax          | What it does                                    |
-| --------------- | ----------------------------------------------- |
-| terraform/**/*  | All files under terraform at any depth          |
-| "**/*.test.tsx" | Any .test.tsx file anywhere in the project      |
-| "**/*.spec.ts"  | Any .spec.ts file anywhere in the project       |
-| "scr/api/*.ts"  | .ts file directly in src/api directory only     |
-| "**/*.{ts.tsx}" | Both .ts and .tsx  file anywhere in the project |
-### The /memory Command
+---
 
-Shows every memory file currently loaded, Your debugging tool when claude isn't following instruction
+## 🛠️ 3. Diagnostic Commands
+
+* **`/memory`**: Displays all active memory files loaded into the current session. Use this diagnostic tool whenever Claude isn't following your instructions as expected.
