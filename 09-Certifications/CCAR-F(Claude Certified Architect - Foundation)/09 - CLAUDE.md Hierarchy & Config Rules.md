@@ -28,13 +28,13 @@ Claude Scans Repo ──► Decision Gate: Does `paths:` match current file?
 
 ### Glob Pattern Reference Table
 
-| Syntax | Target Scope |
-| :--- | :--- |
-| `terraform/**/*` | All files under `terraform/` at any depth |
-| `**/*.test.tsx` | Any `.test.tsx` file anywhere in the project |
-| `**/*.spec.ts` | Any `.spec.ts` file anywhere in the project |
-| `src/api/*.ts` | `.ts` files directly in `src/api/` (excludes deeper subdirectories) |
-| `**/*.{ts,tsx}` | All `.ts` and `.tsx` files anywhere in the project |
+| Syntax           | Target Scope                                                        |
+| :--------------- | :------------------------------------------------------------------ |
+| `terraform/**/*` | All files under `terraform/` at any depth                           |
+| `**/*.test.tsx`  | Any `.test.tsx` file anywhere in the project                        |
+| `**/*.spec.ts`   | Any `.spec.ts` file anywhere in the project                         |
+| `src/api/*.ts`   | `.ts` files directly in `src/api/` (excludes deeper subdirectories) |
+| `**/*.{ts,tsx}`  | All `.ts` and `.tsx` files anywhere in the project                  |
 
 ---
 
