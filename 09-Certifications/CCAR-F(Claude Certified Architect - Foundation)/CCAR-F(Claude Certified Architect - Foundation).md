@@ -8,5 +8,6 @@
 - [[07 - MCP (Model Context Protocol]]
 - [[08 - Built-In Tools]]
 - [[09 - CLAUDE.md Hierarchy & Config Rules]]
+- [[10 - Custom Slash Commands & Skills]]
 
 %% End Waypoint %%

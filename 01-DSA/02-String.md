@@ -342,3 +342,70 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(n)
+
+## [1781. Sum of Beauty of All Substrings](https://leetcode.com/problems/sum-of-beauty-of-all-substrings/)
+
+Sol - We find all the substring and keep incrementing the total 
+
+Code Below -> 
+
+```
+class Solution {
+
+    public int beautySum(String s) {
+
+        int totalBeauty = 0;
+        char[] arr = s.toCharArray();
+        int n = arr.length;
+
+        for(int i = 0; i < n; i++){
+            int[] freq = new int[26];
+            int maxF = 0;
+
+            for(int j = i; j < n; j++){
+
+                int ind = arr[j] - 'a';
+                freq[ind]++;
+                if(freq[ind] > maxF) maxF = freq[ind];
+                if(j - i < 2) continue;
+                int minF  = maxF;
+                for(int k = 0; k < 26; k++){
+                    if(freq[k] > 0 && freq[k] < minF) minF = freq[k];
+                }
+                totalBeauty += (maxF - minF);
+            }      
+        }
+        return totalBeauty;
+    }
+}
+```
+
+Time - O(26 x n^2)    Space - O(1)
+
+
+## [151. Reverse Words in a String](https://leetcode.com/problems/reverse-words-in-a-string/)
+
+Sol - We traverse from back and keep track of each substring in a new string and return the same
+
+Code Below ->
+
+```
+class Solution {
+    public String reverseWords(String s) {
+        StringBuilder ans = new StringBuilder();
+        int i = s.length()-1;
+        while(i >= 0){
+            while(i >= 0 && s.charAt(i) ==' ') i--;
+            if(i < 0) break;
+            int end = i;
+            while(i >= 0 && s.charAt(i) != ' ') i--;
+            String word = s.substring(i + 1, end + 1);
+            if(ans.length() > 0) ans.append(" ");
+            ans.append(word);
+        }
+        return ans.toString();
+    }
+}
+```
+
+Time - O(n)    Space - O(1)
