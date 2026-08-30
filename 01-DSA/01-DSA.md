@@ -3,5 +3,6 @@
 - [[02-String]]
 - [[03-Binary Search]]
 - [[04-Bit Manipulation]]
+- [[05-Linked List]]
 
 %% End Waypoint %%
