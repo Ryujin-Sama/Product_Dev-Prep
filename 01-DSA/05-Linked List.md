@@ -72,3 +72,61 @@ class Solution {
 
 Time - O(n)   Space - O(1)
 
+## [141. Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/)
+
+Sol - Use slow and fast pointer, if they meet return true, else false
+
+Code Below ->
+
+```
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        if(head == null || head.next == null) return false;
+        while(fast.next != null && fast.next.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast) return true;
+        }
+        return false;
+    }
+}
+```
+
+Time - O(n)  Space - O(1)
+
+
+## [142. Linked List Cycle II](https://leetcode.com/problems/linked-list-cycle-ii/)
+
+Sol - we solve this problem by 2 steps - first detect the loop using fast and slow pointers then we assign the slow as head and move both at one pointer each and once they collide we return slow
+why it will collide bcoz - while moving slow to the point of loop cycle take it as L1, and fast pointer would have moved 2L1, and it might need d points to cover to reach slow pointer and on every move the d reduces to d-1 pointer since fast moved 2 times and slow moved 1 time and when they colide it then the total distance by slow pointer is L1 + d and by fast pointer is 2(l1 + d)
+the length of the cycle is $$2(L_1 + d) - (L_1 + d) = k \cdot C$$
+where k  = no of turn fast took and if k == 1 then L1 + d = C so now to meet the starting point then L1 = C  -  d, so we move one pointer each of slow and fast until they meet again.
+
+Code Below ->
+
+```
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        if(head == null || head.next == null) return null;
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast) break;
+        }
+        if(fast == null || fast.next == null) return null;
+        slow = head;
+        while(slow != fast){
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
+
