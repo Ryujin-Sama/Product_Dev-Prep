@@ -226,3 +226,29 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(1)
+
+
+## [2095. Delete the Middle Node of a Linked List](https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/)
+
+Sol - Take two pointers slow = head and fast = head.next.next and move the fast until it reaches null then the slow will be reach before the mid pointer we can simply point the small to the next.next of it
+
+Code Below ->
+
+```
+class Solution {
+    public ListNode deleteMiddle(ListNode head) {
+        if(head == null || head.next == null) return null;
+        ListNode slow = head;
+        ListNode fast = head.next.next;
+
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        slow.next = slow.next.next;
+        return head;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
