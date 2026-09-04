@@ -252,3 +252,80 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(1)
+
+
+## [148. Sort List](https://leetcode.com/problems/sort-list/)
+
+Sol - We use merge sort technique 
+
+Code below ->
+
+```
+class Solution {
+
+    public ListNode sortList(ListNode head) {
+
+        if(head == null || head.next == null) return head;
+        ListNode mid = FindMid(head);
+        ListNode midNext = mid.next;
+        mid.next = null;
+        ListNode left = sortList(head);
+        ListNode right = sortList(midNext);
+
+        return merge(left, right);
+    }
+
+    private ListNode FindMid(ListNode head){
+
+        ListNode slow = head;
+        ListNode fast = slow.next;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    private ListNode merge(ListNode left, ListNode right){
+
+        if(left == null) return right;
+        if(right == null) return left;
+
+        if(left.val < right.val){
+            left.next = merge(left.next, right);
+            return left;
+        }
+        else{
+            right.next = merge(left, right.next);
+            return right;
+        }
+    }
+}
+```
+
+Time - O(n log n)    Space - O(log n)
+
+## [160. Intersection of Two Linked Lists](https://leetcode.com/problems/intersection-of-two-linked-lists/)
+
+Sol - We use a condition on both the pointer if any one of them reach null we assign that pointer to the head of another list and traverse it until that reaches null.
+
+Code Below ->
+
+```
+public class Solution {
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode a = headA;
+        ListNode b = headB;
+
+        while(a != b){
+            a = (a != null) ? a.next : headB;
+            b = (b != null) ? b.next : headA;
+        }
+        return a;
+    }
+}
+
+```
+
+Time - O(n + m)   Space - O(1)
