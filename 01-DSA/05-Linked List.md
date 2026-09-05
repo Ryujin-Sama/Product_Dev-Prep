@@ -329,3 +329,41 @@ public class Solution {
 ```
 
 Time - O(n + m)   Space - O(1)
+
+
+## [2. Add Two Numbers](https://leetcode.com/problems/add-two-numbers/)
+
+Sol - we create a separate list to hold the sum, and we traverse through each list one by one and keep adding and keep a separate variable to keep track of the carry 
+
+Code Below ->
+
+```
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode();
+        ListNode temp = dummy;
+
+        int cry = 0;
+        while(l1 != null || l2 != null || cry == 1){
+            int sum = 0;
+            if(l1 != null){
+                sum += l1.val;
+                l1 = l1.next;
+            }
+            if(l2 != null){
+                sum += l2.val;
+                l2 = l2.next;
+            }
+
+            sum += cry;
+            cry = sum/10;
+            ListNode nod = new ListNode(sum % 10);
+            temp.next = nod;
+            temp = temp.next;
+        }
+        return dummy.next;
+    }
+}
+```
+
+Time - O(max length of the list)   O(N)
