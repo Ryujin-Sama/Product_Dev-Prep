@@ -367,3 +367,59 @@ class Solution {
 ```
 
 Time - O(max length of the list)   O(N)
+
+
+## [25. Reverse Nodes in k-Group](https://leetcode.com/problems/reverse-nodes-in-k-group/)
+
+Sol -  we assign temp == head, prev == null and we will run a while loop till temp != null, then inside the loop first we find the kth node and assign a nextnode.next= kthnode.next and we assign kthnode.next = null and call reverse function and once resevered we check if temp== head if yes then head = kthNode and assign prev = temp and temp = nextnode. and at the end return head;
+
+Code Below ->
+
+```
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+
+       ListNode temp = head;
+       ListNode prev = null;
+       while(temp != null){
+            ListNode kthNode = KthNode(temp, k);
+            if(kthNode == null){
+                if(prev != null) prev.next = temp;
+                    break;
+                }
+            ListNode nextNode = kthNode.next;
+            kthNode.next = null;
+            reverseList(temp);
+            if(temp == head) head = kthNode;
+            else prev.next = kthNode;
+            prev = temp;
+            temp = nextNode;    
+       }
+       return head;
+    }
+
+    public ListNode KthNode(ListNode temp, int k){
+        k -= 1;
+        while(temp != null && k > 0){
+            temp = temp.next;
+            k--;
+        }
+        return temp;
+    }
+
+    public ListNode reverseList(ListNode head) {
+        ListNode temp = null;
+        ListNode temp2 = head;
+        while(temp2 != null){
+            ListNode temp3 = temp2.next;
+            temp2.next = temp;
+            temp = temp2;
+            temp2 = temp3;
+        }
+        return temp;
+    }
+}
+```
+
+Time - O(n)     Space - O(1)
+
