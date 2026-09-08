@@ -423,3 +423,42 @@ class Solution {
 
 Time - O(n)     Space - O(1)
 
+
+## [61. Rotate List](https://leetcode.com/problems/rotate-list/)
+
+Sol - First we check if head or head.next == null or k = 0 if any one of this is true then we return the head, then we traverse the ll once to get the length of the ll then we check if k % n == 0 if yes then we return head since no rotate needed, then we find the no of steps i.e. n = n - k
+we take a variable and traverse till n - k and take a newhead and assign the traversed variabl's next to newhead and assign that variable.next = null and return the newhead;
+
+Code Below ->
+
+```
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null || head.next == null || k == 0) return head;
+        int n = 1;
+        ListNode tail = head;
+        while(tail.next != null){
+            tail = tail.next;
+            n++;
+        }
+
+        k = k % n;
+        if(k == 0) return head;
+
+        tail.next = head;
+
+        int steps = n-k;
+        ListNode newTail = head;
+        for(int i = 1; i < steps; i++){
+            newTail = newTail.next;
+        }
+
+        ListNode newHead = newTail.next;
+        newTail.next = null;
+        return newHead;
+    }
+}
+
+```
+
+Time - O(n + (n-k))   Space - O(1)
