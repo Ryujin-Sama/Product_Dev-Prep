@@ -51,3 +51,128 @@ class Solution {
 ```
 
 Time - O(log n)   Space - O(1)
+
+
+## [2220. Minimum Bit Flips to Convert Number](https://leetcode.com/problems/minimum-bit-flips-to-convert-number/)
+
+Sol - Use XOR and count the 1s
+
+Code Below ->
+
+```
+class Solution {
+    public int minBitFlips(int start, int goal) {
+       return Integer.bitCount(start ^ goal);
+    }
+}
+```
+
+Time - O(1)    Space - O(1)
+
+## [136. Single Number](https://leetcode.com/problems/single-number/)
+
+Sol - Use XOR
+
+Code Below ->
+
+```
+class Solution {
+    public int singleNumber(int[] nums) {
+        int xor = 0;
+
+        for(int i = 0; i < nums.length; i++){
+            xor ^= nums[i];
+        }
+        return xor;
+    }
+}
+```
+
+Time - O(n)   Space - O(1)
+
+
+## [78. Subsets](https://leetcode.com/problems/subsets/)
+
+Sol - we find the total of subset with 1 << n - 2 ^ n  then we run two loop one with i = 0 to i < 2^n and second one from j = 0 to j < n, and we find if (i & (1 << j)) != 0, then we add that nums(j) in the list.
+
+Code Below -> 
+
+```
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        int n = nums.length;
+        int subq = 1 << n;
+
+        for(int i = 0; i < subq; i++){
+            List<Integer> subset = new ArrayList<>();
+            for(int j = 0; j < n; j++){
+                if((i & (1 << j)) != 0) subset.add(nums[j]);
+            }
+            res.add(subset);
+        }
+        return res;
+    }
+}
+```
+
+Time - O( n x 2 ^ n)   Space - O(2^n)
+
+
+## [204. Count Primes](https://leetcode.com/problems/count-primes/)
+
+Sol - Use  **Sieve of Eratosthenes** 2 loops, one from i = 2 to  i * i < n and second is from j = i * i to j < n,
+
+Code below -> 
+
+```
+class Solution {
+    public int countPrimes(int n) {
+
+        if(n < 2) return 0;
+        int cnt = 0;
+        boolean[] comp = new boolean[n];
+        for(int i = 2; i * i < n; i++){
+            if(!comp[i]){
+                for(int j = i * i; j < n; j += i) comp[j] = true;
+            }
+        }
+        for(int i = 2; i < n; i++) if(!comp[i]) cnt++;
+        return cnt;
+    }
+}
+```
+
+Time - O(n(log(log n)))    Space - O(n)
+
+
+## [50. Pow(x, n)](https://leetcode.com/problems/powx-n/)
+
+Sol - - **Odd Exponent (`nn % 2 != 0`):** Multiplies the running result (`ans`) by the current base `x` and reduces the exponent by 1. **Even Exponent (`nn % 2 == 0`):** Squares the base (`x *= x`) and cuts the exponent in half (`nn /= 2`).
+
+Code Below ->
+
+```
+class Solution {
+    public double myPow(double x, int n) {
+        double nn = n;
+        if(n < 0) nn = -1 * nn;
+        double ans = 1.0;
+
+        while(nn > 0){
+            if(nn % 2 != 0){
+                ans *= x;
+                nn -= 1;
+            }
+            else{
+                x *= x;
+                nn /= 2;
+            }
+        }
+        if(n < 0) return 1/ans;
+        return ans;
+    }
+}
+```
+
+Time - O(log n)   Space - O(1)
