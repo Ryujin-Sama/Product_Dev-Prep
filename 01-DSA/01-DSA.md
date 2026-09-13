@@ -4,5 +4,6 @@
 - [[03-Binary Search]]
 - [[04-Bit Manipulation]]
 - [[05-Linked List]]
+- [[06-Stacks & Queues]]
 
 %% End Waypoint %%
