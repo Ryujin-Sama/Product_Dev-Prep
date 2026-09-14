@@ -135,3 +135,66 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(n)
+
+
+## [155. Min Stack](https://leetcode.com/problems/min-stack/)
+
+Sol - We follow certain condition, first we check if the stack isEmpty if yes then assign the min with the value and if stack not empty and val > min then we push the value and if val < min then we do an operation 2 x valu - min and insert this value into the stack and update min with this value.
+for pop operation as we follow the same , same with top function as well
+
+Code Below ->
+
+```
+class MinStack {
+
+    Stack<Long> st = new Stack<>();
+    long min;
+
+    public MinStack() {
+
+    }
+
+    public void push(int value) {
+
+        if(st.isEmpty()){
+            min = (long)value;
+            st.push((long)value);
+        }
+
+        else{
+            if((long)value > min) st.push((long)value);
+            else{
+                st.push(2L * (long)value - min);
+                min = (long)value;
+            }
+        }
+    }
+
+    public void pop() {
+
+        long x = st.pop();
+        if(x < min) min = 2 * min - x;
+    }
+
+    public int top() {
+
+        long x = st.peek();
+        return x < min ? (int)min : (int)x;
+    }
+
+    public int getMin() {
+        return (int)min;
+    }
+}
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack obj = new MinStack();
+ * obj.push(value);
+ * obj.pop();
+ * int param_3 = obj.top();
+ * int param_4 = obj.getMin();
+ */
+```
+
+Time - Push - O(1), pop - O(1)   Space - O(N)
