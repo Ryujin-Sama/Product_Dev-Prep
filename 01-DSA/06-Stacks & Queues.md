@@ -199,7 +199,7 @@ class MinStack {
 
 Time - Push - O(1), pop - O(1)   Space - O(N)
 
-## Infix to Postfix Convertion
+## Infix to Postfix Conversion
 
 - Start by scanning the infix expression from left to right.
 - If the scanned character is an operand, print it immediately.
@@ -288,7 +288,7 @@ public class Main {
 Time - O(N)   Space - O(N)
 
 
-## Infix to Prefix Convertion
+## Infix to Prefix Conversion
 
 - Reverse the given infix expression.
 - Scan the expression from left to right.
@@ -394,3 +394,59 @@ public class Main {
     }
 }
 ```
+
+Time - O(n)    Space - O(n)
+
+
+## Postfix to Infix Conversion
+
+Sol - 
+- Traverse the postfix expression from left to right.
+- Use a stack to store operands.
+- For each operator, pop two operands, combine them in infix order with parentheses, and push the result back.
+- The final item in the stack will be the infix expression.
+
+Code Below ->
+
+```
+import java.util.*;
+
+class PostfixToInfix {
+    // Function to convert postfix to infix
+    public String postfixToInfix(String postfix) {
+        Stack<String> s = new Stack<>();
+        int n = postfix.length();
+
+        // Traverse the postfix expression from left to right
+        for (int i = 0; i < n; i++) {
+            char c = postfix.charAt(i);
+
+            // If the character is an operand, push it to the stack
+            if (Character.isLetterOrDigit(c)) {
+                s.push(String.valueOf(c));
+            } else {
+                // Pop two operands from the stack
+                String op2 = s.pop();
+                String op1 = s.pop();
+
+                // Form the new infix expression and push back to stack
+                s.push("(" + op1 + c + op2 + ")");
+            }
+        }
+
+        // The final element in the stack is the result
+        return s.peek();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        PostfixToInfix converter = new PostfixToInfix();
+        String postfix = "AB*C+";
+        System.out.println("Infix Expression: " + converter.postfixToInfix(postfix));
+    }
+}
+
+```
+
+Time - O(n)   Space - O(n)
