@@ -450,3 +450,164 @@ public class Main {
 ```
 
 Time - O(n)   Space - O(n)
+
+
+## Prefix to Infix Conversion
+
+Sol - 
+- Traverse the prefix expression from right to left.
+- Use a stack to store operands.
+- For each operator, pop two operands from the stack, wrap them in parentheses, and push the resulting expression back.
+- The final item in the stack will be the infix expression.
+
+Code Below ->
+
+```
+import java.util.*;
+
+class PrefixToInfix {
+    // Function to convert prefix to infix
+    public String prefixToInfix(String prefix) {
+        Stack<String> s = new Stack<>();
+        int n = prefix.length();
+
+        // Traverse the prefix expression from right to left
+        for (int i = n - 1; i >= 0; i--) {
+            char c = prefix.charAt(i);
+
+            // If the character is an operand, push it to the stack
+            if (Character.isLetterOrDigit(c)) {
+                s.push(String.valueOf(c));
+            } else {
+                // Pop two operands from the stack
+                String op1 = s.pop();
+                String op2 = s.pop();
+
+                // Form the new infix expression and push back to stack
+                s.push("(" + op1 + c + op2 + ")");
+            }
+        }
+
+        // The final element in the stack is the result
+        return s.peek();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        PrefixToInfix converter = new PrefixToInfix();
+        String prefix = "*-A/BC-/AKL";
+        System.out.println("Infix Expression: " + converter.prefixToInfix(prefix));
+    }
+}
+
+```
+
+Time - O(N)   Space - O(N)
+
+
+## Postfix to Prefix Conversion
+
+Sol - 
+- Traverse the postfix expression from left to right.
+- Use a stack to store operands.
+- For each operator, pop two operands, combine them with the operator in prefix order, and push the result back.
+- The final item in the stack will be the prefix expression.
+
+Code Below ->
+
+```
+import java.util.*;
+
+class PostfixToPrefix {
+    // Function to convert postfix to prefix
+    public String postfixToPrefix(String postfix) {
+        Stack<String> s = new Stack<>();
+        int n = postfix.length();
+
+        // Traverse the postfix expression from left to right
+        for (int i = 0; i < n; i++) {
+            char c = postfix.charAt(i);
+
+            // If the character is an operand, push it to the stack
+            if (Character.isLetterOrDigit(c)) {
+                s.push(String.valueOf(c));
+            } else {
+                // Pop two operands from the stack
+                String op2 = s.pop();
+                String op1 = s.pop();
+
+                // Form the new prefix expression and push back to stack
+                s.push(c + op1 + op2);
+            }
+        }
+
+        // The final element in the stack is the result
+        return s.peek();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        PostfixToPrefix converter = new PostfixToPrefix();
+        String postfix = "ABC/-AK/L-*";
+        System.out.println("Prefix Expression: " + converter.postfixToPrefix(postfix));
+    }
+}
+
+```
+
+Time - O(n)   Space - O(n)
+
+## Prefix to Postfix Conversion
+
+Sol - 
+- Traverse the prefix expression from right to left.
+- Use a stack to store operands.
+- For each operator, pop two operands from the stack, combine them with the operator, and push the result back.
+- The final item in the stack will be the postfix expression.
+
+Code Below ->
+
+```
+import java.util.*;
+
+class PrefixToPostfix {
+    // Function to convert prefix to postfix
+    public String prefixToPostfix(String prefix) {
+        Stack<String> s = new Stack<>();
+        int n = prefix.length();
+
+        // Traverse the prefix expression from right to left
+        for (int i = n - 1; i >= 0; i--) {
+            char c = prefix.charAt(i);
+
+            // If the character is an operand, push it to the stack
+            if (Character.isLetterOrDigit(c)) {
+                s.push(String.valueOf(c));
+            } else {
+                // Pop two operands from the stack
+                String op1 = s.pop();
+                String op2 = s.pop();
+
+                // Form the new postfix expression and push back to stack
+                s.push(op1 + op2 + c);
+            }
+        }
+
+        // The final element in the stack is the result
+        return s.peek();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        PrefixToPostfix converter = new PrefixToPostfix();
+        String prefix = "*-A/BC-/AKL";
+        System.out.println("Postfix Expression: " + converter.prefixToPostfix(prefix));
+    }
+}
+
+```
+
+Time - O(n)   Space - O(n)
