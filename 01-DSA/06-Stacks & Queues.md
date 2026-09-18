@@ -611,3 +611,32 @@ public class Main {
 ```
 
 Time - O(n)   Space - O(n)
+
+
+## [496. Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/)
+
+Sol - We traverse from back and check if the right most element is greatest if yes then we push the current element to the stack and we take the st.peek() element in the temp array, and incase if the peek() element is less we keep popping the element till we find the greatest in the stack if nothing found we keep -1 for that element in the temp array and push the current element in the stack.
+Finally we will update nums1 with temp(nums1(i)) and return nums1
+
+Code Below ->
+
+```
+class Solution {
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+
+        int[] ng = new int[10001];
+        Stack<Integer> st = new Stack<>();
+
+        for(int i = nums2.length - 1; i >= 0; i--){
+            while(!st.isEmpty() && st.peek() <= nums2[i]) st.pop();
+            ng[nums2[i]] = st.isEmpty() ? -1 : st.peek();
+            st.push(nums2[i]);
+        }
+
+        for(int i = 0; i < nums1.length; i++) nums1[i] = ng[nums1[i]];
+        return nums1;
+    }
+}
+```
+
+Time - O(n)    Space - O(n)
