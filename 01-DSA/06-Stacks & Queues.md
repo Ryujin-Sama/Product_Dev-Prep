@@ -640,3 +640,108 @@ class Solution {
 ```
 
 Time - O(n)    Space - O(n)
+
+
+## [503. Next Greater Element II](https://leetcode.com/problems/next-greater-element-ii/)
+
+Sol - we traverse twice the array by keeping ind = i % nums.length, and follow the same solution of next greater ele
+
+Code Below ->
+
+```
+class Solution {
+
+    public int[] nextGreaterElements(int[] nums) {
+
+        int[] ans = new int[nums.length];
+        Stack<Integer> st = new Stack<>();
+        for(int i = (2 * nums.length - 1); i >= 0 ; i--){
+            int ind = i % nums.length;
+            while(!st.isEmpty() && st.peek() <= nums[ind]) st.pop();
+            if(st.isEmpty()) ans[ind] = -1;
+            else ans[ind] = st.peek();
+            st.push(nums[ind]);
+        }
+        return ans;
+    }
+}
+```
+
+Time - O(n)    Space - O(2n)
+
+
+## [42. Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)
+
+Sol - Two Approach  - One with a space complexity O(N) and another with space O(1)
+
+1st Approach - we keep two additional array holding premax and suff max and on each treversal of the main array we go and check if arr(i) < leftmax and arr(i) < rightmax if yes then we add the total with  min(leftmax, rightmax) - arr(i) and finally return the total
+
+Code Below ->
+
+```
+class Solution {
+
+    public int trap(int[] height) {
+
+        int[] premax = new int[height.length];
+        int[] sufmax = new int[height.length];
+        int n = height.length;
+        premax[0] = height[0];
+        sufmax[n-1] = height[n-1];
+        for(int i = 1; i < n; i++){
+
+            premax[i] = Math.max(premax[i-1], height[i]);
+            // sufmax[n-i] = Math.max(sufmax[n-i + 1], height[n-i]);
+        }
+
+        for (int i = n - 2; i >= 0; i--) {
+
+            sufmax[i] = Math.max(sufmax[i + 1], height[i]);
+        }
+
+        int total = 0;
+        for(int i = 0; i < n; i++){
+
+            int leftmax = premax[i], rightmax = sufmax[i];
+            if(height[i] < leftmax && height[i] < rightmax) total += (Math.min(leftmax, rightmax) - height[i]);
+        }
+        return total;
+    }
+}
+```
+
+Time - O(N)   Space - O(N)
+
+2nd Approach - while traversing we keep the leftmax and rightmax updated and once lmax and rmax reaches the same point we return the total.
+
+Code below ->
+
+```
+class Solution {
+
+    public int trap(int[] height) {
+
+        int l = 0;
+        int r = height.length - 1;
+        int leftmax = 0, rightmax = 0, total = 0;
+
+        while(l < r){
+
+            if(height[l] <= height[r]){
+                if(leftmax > height[l]) total += leftmax - height[l];
+                else leftmax = height[l];
+                l++;
+            }
+            else{
+
+                if(rightmax > height[r]) total += rightmax - height[r];
+                else rightmax = height[r];
+                r--;
+            }
+        }
+        return total;
+    }
+}
+```
+
+Time - O(N)   Space - O(1)
