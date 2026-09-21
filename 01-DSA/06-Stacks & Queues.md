@@ -745,3 +745,36 @@ class Solution {
 ```
 
 Time - O(N)   Space - O(1)
+
+
+## [735. Asteroid Collision](https://leetcode.com/problems/asteroid-collision/)
+
+Sol - We will use stack and insert into stack if asteroid is positive and if negative we check the st.peek() and if it's less then the negative asteroid then we pop that element from the stack and we keep doing it until a bigger asteroid is found, and incase at the end there is no positive element we insert the negative element only and return them in a array in a reverse manner.
+
+Code Below ->
+
+```
+class Solution {
+
+    public int[] asteroidCollision(int[] asteroids) {
+
+        Stack<Integer> st = new Stack<>();
+        for(int a : asteroids){
+
+            if(a > 0) st.push(a);
+            else{
+                while(!st.isEmpty() && st.peek() > 0 && st.peek() < -a) st.pop();
+                if(st.isEmpty() || st.peek() < 0) st.push(a);
+                if(st.peek() == -a) st.pop();
+            }
+        }
+
+        int res[] = new int[st.size()];
+        int i = st.size()-1;
+        while(!st.isEmpty()) res[i--] = st.pop();
+        return res;
+    }
+}
+```
+
+Time - O(n)    Space - O(n)
