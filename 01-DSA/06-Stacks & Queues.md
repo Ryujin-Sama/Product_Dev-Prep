@@ -778,3 +778,50 @@ class Solution {
 ```
 
 Time - O(n)    Space - O(n)
+
+
+## [907. Sum of Subarray Minimums](https://leetcode.com/problems/sum-of-subarray-minimums/)
+
+Sol - First use next smallest element and fill the left array, then use previous smallest element and fill the right array and a loop to find the total sum.
+
+Code Below ->
+
+```
+class Solution {
+
+    public int sumSubarrayMins(int[] arr) {
+
+        int n = arr.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        Arrays.fill(left, -1);
+        Arrays.fill(right, n);
+        Stack<Integer> st = new Stack<>();
+        for(int i = 0; i < n; i++){
+
+            while(!st.isEmpty() && arr[st.peek()] >= arr[i]) st.pop();
+            if(!st.isEmpty()) left[i] = st.peek();
+            st.push(i);
+        }
+        st.clear();
+
+        for(int i = n-1;i >= 0; i--){
+
+            while(!st.isEmpty() && arr[st.peek()] > arr[i]) st.pop();
+            if(!st.isEmpty()) right[i] = st.peek();
+            st.push(i);
+        }
+
+        int mod = (int) 1e9 + 7;
+        long ans = 0;
+        for(int i = 0; i < n; i++){
+
+            ans += (long)(i - left[i]) * (right[i] - i) % mod * arr[i] % mod;
+            ans %= mod;
+        }
+        return (int) ans;
+    }
+}
+```
+
+Time - O(n)   Space - O(2n)
