@@ -825,3 +825,90 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(2n)
+
+
+## [2104. Sum of Subarray Ranges](https://leetcode.com/problems/sum-of-subarray-ranges/)
+
+Sol - Using next greatest and next smallest we can solve 
+
+Code Below ->
+
+```
+class Solution {
+
+    public long subArrayRanges(int[] nums) {
+
+        int n = nums.length, j, k;
+        long res = 0;
+
+        Stack<Integer> st = new Stack<>();
+        for(int i = 0; i <= n; i++){
+
+            while(!st.isEmpty() && nums[st.peek()] > (i == n ? Integer.MIN_VALUE : nums[i])){
+
+                j = st.pop();
+                k = st.isEmpty() ? -1 : st.peek();
+                res -= (long) nums[j] * (i - j) * (j - k);
+            }
+
+            st.push(i);
+        }
+        st.clear();
+        for(int i = 0; i <= n; i++){
+            while(!st.isEmpty() && nums[st.peek()] < (i == n ? Integer.MAX_VALUE : nums[i])){
+                j = st.pop();
+                k = st.isEmpty() ? -1 : st.peek();
+                res += (long) nums[j] * (i - j) * (j - k);
+            }
+            st.push(i);
+        }
+        return res;8
+    }
+}
+```
+
+Time - O(n)   Space - O(n)
+
+
+## [402. Remove K Digits](https://leetcode.com/problems/remove-k-digits/)
+
+Sol - Traverse through the string and keep a stack and if the next digit is smaller then the element in the st.peek(), pop it and save this until k = 0 in the end return the reverse of the stack.
+
+Code Below ->
+
+```
+class Solution {
+
+    public String removeKdigits(String num, int k) {
+
+        Stack<Character> st = new Stack<>();
+
+        for(char digi : num.toCharArray()){
+
+            while(!st.isEmpty() && k > 0 && st.peek() > digi){
+
+                st.pop();
+                k--;
+            }
+
+            st.push(digi);
+        }
+
+        while(k > 0 && !st.isEmpty()){
+
+            st.pop();
+            k--;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        while(!st.isEmpty()) sb.append(st.pop());
+        sb.reverse();
+
+        while(sb.length() > 0 && sb.charAt(0) == '0') sb.deleteCharAt(0);
+
+        return sb.length() > 0 ? sb.toString() : "0";
+    }
+}
+```
+
+Time - O(n)   Space - O(n)
