@@ -912,3 +912,66 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(n)
+
+
+## [901. Online Stock Span](https://leetcode.com/problems/online-stock-span/)
+
+Sol - On each iteration we check if the current price is less then the stack.peek() if yes then we pop and add it to the span and push the price and span to the stack and return span
+
+Code Below ->
+
+```
+class StockSpanner {
+
+    private Stack<int[]> st;
+
+    public StockSpanner() {
+
+        st = new Stack<>();
+    }
+
+    public int next(int price) {
+
+        int span = 1;
+        while(!st.isEmpty() && st.peek()[0] <= price) span += st.pop()[1];
+        st.push(new int[]{price, span});
+        return span;
+
+    }
+}
+```
+
+Time - O(1)   Space - O(n)
+
+
+## [239. Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/)
+
+Sol - We run a loop  to n and on each iteration of i we check in the deque if the deque.peekFirst < i - k, if yes we pop the peekFirst, 
+and again a while check on if arr(deque.peeklast) < nums(i) then we pop deque.pollLast and add the i to the stack and if i > k - 1 then we add the element to the list 
+
+Code Below ->
+
+```
+class Solution {
+
+    public int[] maxSlidingWindow(int[] nums, int k) {
+
+        int n = nums.length;
+        if(n == 0 || k == 0) return new int[0];
+        int[] res = new int[n- k + 1];
+        Deque<Integer> ans = new ArrayDeque<>();
+
+        for(int i = 0; i < n; i++){
+
+            while(ans.size() > 0 && ans.peekFirst() <= i - k) ans.pollFirst();
+            while(ans.size() > 0 && nums[ans.peekLast()] < nums[i]) ans.pollLast();
+            ans.offerLast(i);
+            if(i >= k - 1) res[i - k + 1] = nums[ans.peekFirst()];
+        }
+
+        return res;      
+    }
+}
+```
+
+Time - O(n)   Space - O(k)
