@@ -975,3 +975,48 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(k)
+
+
+## [84. Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/)
+
+Sol - We run a loop around the array and check if the stack is not empty and the stored index in the stack is > then the array element if yes then we store that to a variable ele and pop it from the stack and compute maxArea for it using Math.max(maxArea, (arr(ele) * (nse - pse - 1)))
+
+Code Below ->
+
+```
+class Solution {
+
+    public int largestRectangleArea(int[] heights) {
+
+        Stack<Integer> st = new Stack<>();
+        int maxArea = 0;
+        int ele;
+
+        for(int i = 0; i < heights.length; i++){
+
+            while(!st.isEmpty() && heights[st.peek()] > heights[i]){
+
+                ele = st.peek();
+                st.pop();
+                int pse = st.isEmpty() ? -1 : st.peek();
+                maxArea = Math.max(maxArea, (heights[ele] * (i - pse - 1)));
+            }
+
+            st.push(i);
+        }
+
+        while(!st.isEmpty()){
+
+            int nse = heights.length;
+            ele = st.peek();
+            st.pop();
+            int pse = st.isEmpty() ? -1 : st.peek();
+            maxArea = Math.max(maxArea, (heights[ele] * (nse - pse - 1)));
+        }
+
+        return maxArea;
+    }
+}
+```
+
+Time - O(n)   Space - O(n)
