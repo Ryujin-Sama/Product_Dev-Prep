@@ -9,5 +9,6 @@
 - [[08 - Built-In Tools]]
 - [[09 - CLAUDE.md Hierarchy & Config Rules]]
 - [[10 - Custom Slash Commands & Skills]]
+- [[11 - Plan Mode vs Execute]]
 
 %% End Waypoint %%
