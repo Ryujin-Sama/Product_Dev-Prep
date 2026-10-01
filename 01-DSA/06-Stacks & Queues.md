@@ -1020,3 +1020,68 @@ class Solution {
 ```
 
 Time - O(n)   Space - O(n)
+
+
+## [85. Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/)
+
+Sol - We build the histogram in one array and follow the above solution for the same.
+
+Code Below ->
+
+```
+class Solution {
+
+    public int maximalRectangle(char[][] matrix) {
+
+        if(matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int maxArea = 0;
+        int[] heights = new int[cols + 1];
+
+        for(char[] row : matrix){
+
+            for(int i = 0; i < cols; i++){
+
+                heights[i] = (row[i] == '1') ? heights[i] + 1 : 0;
+            }
+            int area = largestRectangleArea(heights);
+            maxArea = Math.max(maxArea, area);
+        }
+        return maxArea;
+    }
+
+  
+
+    public int largestRectangleArea(int[] heights) {
+
+        Stack<Integer> st = new Stack<>();
+        int maxArea = 0;
+        int ele;
+        for(int i = 0; i < heights.length; i++){
+
+            while(!st.isEmpty() && heights[st.peek()] > heights[i]){
+
+                ele = st.peek();
+                st.pop();
+                int pse = st.isEmpty() ? -1 : st.peek();
+                maxArea = Math.max(maxArea, (heights[ele] * (i - pse - 1)));
+            }
+            st.push(i);
+        }
+
+        while(!st.isEmpty()){
+
+            int nse = heights.length;
+            ele = st.peek();
+            st.pop();
+            int pse = st.isEmpty() ? -1 : st.peek();
+            maxArea = Math.max(maxArea, (heights[ele] * (nse - pse - 1)));
+        }
+
+        return maxArea;
+    }
+}
+```
+
+Time - O(n^2)  Space - O(col)
