@@ -10,5 +10,6 @@
 - [[09 - CLAUDE.md Hierarchy & Config Rules]]
 - [[10 - Custom Slash Commands & Skills]]
 - [[11 - Plan Mode vs Execute]]
+- [[12 - Claude Code in CI CD Pipeline]]
 
 %% End Waypoint %%

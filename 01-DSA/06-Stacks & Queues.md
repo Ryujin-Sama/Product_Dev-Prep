@@ -1085,3 +1085,97 @@ class Solution {
 ```
 
 Time - O(n^2)  Space - O(col)
+
+
+## [146. LRU Cache](https://leetcode.com/problems/lru-cache/)
+
+Sol - Use DDL , if the get is used for a value then we push that close to head and while adding initially we add it near the tail, we hold a capacity of some number and if a new entries comes and the map is full then we pop a element from the linked list.
+
+Code Below ->
+
+```
+class LRUCache {
+
+    private static class Node{
+
+        int key, val;
+        Node prev, next;
+        Node(int key, int val){
+
+            this.key = key;
+            this.val = val;
+        }
+
+    }
+
+    private final int capacity;
+    private final Map<Integer, Node> mpp;
+    private final Node head;
+    private final Node tail;
+
+    public LRUCache(int capacity) {
+
+        this.capacity = capacity;
+        this.mpp = new HashMap<>((int) (capacity / 0.75f) + 1);
+        this.head = new Node(-1, -1);
+        this.tail = new Node(-1, -1);
+        head.next = tail;
+        tail.prev = head;
+
+    }
+
+    public int get(int key) {
+
+        Node node = mpp.get(key);
+        if(node == null) return -1;
+        moveToTail(node);
+        return node.val;
+    }
+
+    public void put(int key, int value) {
+
+        Node node = mpp.get(key);
+        if(node != null){
+            node.val = value;
+            moveToTail(node);
+            return;
+
+        }
+        
+        if(mpp.size() == capacity){
+
+            Node lru = head.next;
+            removeNode(lru);
+            mpp.remove(lru.key);
+        }
+
+        Node newNode = new Node(key, value);
+        addNode(newNode);
+        mpp.put(key, newNode);
+
+    }
+
+    private void addNode(Node node){
+
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
+
+    }
+
+    private void removeNode(Node node){
+
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void moveToTail(Node node){
+
+        removeNode(node);
+        addNode(node);
+    }
+}
+```
+
+
