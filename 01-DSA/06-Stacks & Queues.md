@@ -1179,3 +1179,71 @@ class LRUCache {
 ```
 
 
+## [460. LFU Cache](https://leetcode.com/problems/lfu-cache/)
+
+Sol - Use 3 HashMap to store key To value, value freq and freq to LRU and follow operations 
+
+Code Below ->
+
+```
+class LFUCache {
+
+    private int capacity;
+    private int minFreq = 0;
+    private Map<Integer, Integer> keyToVal = new HashMap<>();
+    private Map<Integer, Integer> keyToFreq = new HashMap<>();
+    private Map<Integer, LinkedHashSet<Integer>> freqToLRU = new HashMap<>();
+
+    private void putFreq(int key, int freq){
+
+        keyToFreq.put(key, freq);
+        freqToLRU.putIfAbsent(freq, new LinkedHashSet<>());
+        freqToLRU.get(freq).add(key);
+    }
+
+    public LFUCache(int capacity) {
+
+        this.capacity = capacity;
+    }
+
+    public int get(int key) {
+
+        if(!keyToVal.containsKey(key)) return -1;
+        final int freq = keyToFreq.get(key);
+        freqToLRU.get(freq).remove(key);
+        if(freq == minFreq && freqToLRU.get(freq).isEmpty()){
+
+            freqToLRU.remove(freq);
+            ++minFreq;
+        }
+
+        putFreq(key, freq + 1);
+        return keyToVal.get(key);
+    }
+
+    public void put(int key, int value) {
+
+        if(capacity == 0) return;
+        if(keyToVal.containsKey(key)){
+
+            keyToVal.put(key, value);
+            get(key);
+            return;
+        }
+
+        if(keyToVal.size() == capacity){
+
+            final int keyToEvict = freqToLRU.get(minFreq).iterator().next();
+            freqToLRU.get(minFreq).remove(keyToEvict);
+            keyToVal.remove(keyToEvict);
+        }
+
+        minFreq = 1;
+        putFreq(key, minFreq);
+        keyToVal.put(key, value);
+    }
+}
+```  
+
+Time - O(1)   Space  - O(N)
+
