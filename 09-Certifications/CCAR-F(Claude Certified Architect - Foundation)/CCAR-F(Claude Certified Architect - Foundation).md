@@ -11,5 +11,6 @@
 - [[10 - Custom Slash Commands & Skills]]
 - [[11 - Plan Mode vs Execute]]
 - [[12 - Claude Code in CI CD Pipeline]]
+- [[13 - Structured Output & JSON Schema]]
 
 %% End Waypoint %%

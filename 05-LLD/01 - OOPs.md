@@ -1,6 +1,6 @@
 
 **Why OOPs ?**
-1. Real World Modelings
+1. Real World Modeling's
 2. Data Security
 3. Reusable and Scalable
 

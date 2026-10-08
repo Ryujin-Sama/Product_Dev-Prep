@@ -5,5 +5,6 @@
 - [[04-Bit Manipulation]]
 - [[05-Linked List]]
 - [[06-Stacks & Queues]]
+- [[07-Recursion]]
 
 %% End Waypoint %%
