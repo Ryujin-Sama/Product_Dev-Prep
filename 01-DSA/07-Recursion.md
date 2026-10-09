@@ -178,3 +178,60 @@ Space -
 		 $O(2^n \cdot n)$
 - **Recursion Stack:** The maximum depth of the recursion tree is $O(n)$, which is the space required for the call stack and the temporary list (`ds`).
 - **Result Storage (`res`):** Storing all the unique subsets takes up space proportional to the number of unique subsets multiplied by their average length. In the worst case (all elements unique), this is $O(2^n \cdot n)$. If there are heavy duplicates, it will be less, but space complexity bounds are typically expressed in terms of the worst case
+
+
+## [131. Palindrome Partitioning](https://leetcode.com/problems/palindrome-partitioning/)
+
+Sol - We will use Recursion and Backtracking for the same, we will check each substring and run it through a check of isPalindrome function and if yes we add to the temp array and while backtrack the same
+
+Code Below ->
+
+```
+class Solution {
+
+    public Boolean isPalin(String str){
+
+        int end = str.length()-1;
+        int st = 0;
+        while(st <= end){
+            if(str.charAt(st) != str.charAt(end)) return false;
+            st++;
+            end--;
+        }
+
+        return true;
+    }
+
+    public void findPart(int ind, String s, int n, List<List<String>> ans, List<String> ds){
+
+        if(ind == n){
+            ans.add(new ArrayList<>(ds));
+            return;
+        }
+
+        for(int i = ind;i < n; i++){
+
+            String str = s.substring(ind, i+1);
+            if(isPalin(str)){
+                ds.add(str);
+                findPart(i+1,s,n,ans,ds);
+                ds.remove(ds.size()-1);
+            }
+        }
+    }
+
+    public List<List<String>> partition(String s) {
+
+        List<List<String>> ans = new ArrayList<>();
+        int n = s.length();
+        findPart(0,s,n,ans,new ArrayList<>());
+        return ans;
+    }
+}
+```
+
+Time - 
+		$O(2^n \cdot n)$
+
+Space - 
+		$O(N)$

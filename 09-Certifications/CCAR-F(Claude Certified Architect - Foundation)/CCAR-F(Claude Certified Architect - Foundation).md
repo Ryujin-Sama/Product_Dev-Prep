@@ -12,5 +12,6 @@
 - [[11 - Plan Mode vs Execute]]
 - [[12 - Claude Code in CI CD Pipeline]]
 - [[13 - Structured Output & JSON Schema]]
+- [[14 - Batch API & Multi-Pass Review]]
 
 %% End Waypoint %%
