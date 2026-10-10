@@ -235,3 +235,112 @@ Time -
 
 Space - 
 		$O(N)$
+
+
+## [79. Word Search](https://leetcode.com/problems/word-search/)
+
+Sol - We will be using DFS and Backtracking for this problem, base case will be if k == word.length and we return false if the i and j reaches out of bound or the char at board for i and j is not same as word.charAt(k)
+we backtrack and recursively check the adjacent cells with calling the fun again with i+1, i-1, j+1, j-1 and replace the checked matrix point with '.' and after the recursive call revert the change back.
+
+Code Below ->
+
+```
+class Solution {
+
+    public boolean solve(int i, int j, int k, String word, char[][]board){
+
+        if(k == word.length()) return true;
+        if(i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j] != word.charAt(k)) return false;
+
+        board[i][j] = '.';
+        boolean ans = solve(i + 1, j, k+1, word, board) || solve(i-1,j,k+1,word,board) || solve(i,j+1,k+1,word,board)|| solve(i,j-1,k+1,word,board);
+        board[i][j] = word.charAt(k);
+        return ans;
+    }
+
+  
+
+    public boolean exist(char[][] board, String word) {
+
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[0].length; j++){
+
+                if(solve(i,j,0,word, board)) return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+Time - 
+		 $O(M * N * 4^L)$
+- $M$ is the number of rows and $N$ is the number of columns in the board.
+- $L$ is the length of the word.
+- We start a search from each of the $M \times N$ cells. From each cell, the search can branch out in up to 4 directions for a depth of $L$ (the length of the word). _(Note: Strictly speaking, it's closer to $3^L$ because we don't step backward into the cell we just came from, but $4^L$ is the standard upper-bound estimation)._
+
+Space -
+		 $O(L)$
+- The space complexity is determined by the maximum depth of the recursion stack during the DFS, which equals the length of the word ($L$).
+- Because the board is modified in-place (and restored via backtracking), no extra auxiliary data structures like a visited matrix are required.
+
+## [51. N-Queens](https://leetcode.com/problems/n-queens/)
+
+Sol - We will create row stringbuilder with '.' and we add this String to the board arrayList which will have n board then we call the func placeQueens and which will recursively check if there any queen on the left side, top side, bottom side, right side and on the both diagonals and place a 'Q' accordingly
+
+Code Below ->
+
+```
+class Solution {
+
+    public void placeQueens(List<List<String>> ans, List<StringBuilder> board, int n, boolean[] leftDia, boolean[] rightDia, boolean[] col, int ind){
+
+        if(ind == n){
+
+            List<String> temp = new ArrayList<>();
+            for(StringBuilder s: board) temp.add(s.toString());
+            ans.add(temp);
+            return;
+        }
+
+        for(int j = 0; j < n; j++){
+            if(col[j] || leftDia[n-1+ind-j] || rightDia[ind+j]) continue;
+
+            col[j] = true;
+            leftDia[n - 1 + ind- j] = true;
+            rightDia[ind + j] = true;
+            board.get(ind).setCharAt(j, 'Q');
+            placeQueens(ans, board, n, leftDia, rightDia, col, ind + 1);
+            col[j] = false;
+            leftDia[n - 1 + ind - j] = false;
+            rightDia[ind + j] = false;
+            board.get(ind).setCharAt(j, '.');
+        }
+    }
+
+    public List<List<String>> solveNQueens(int n) {
+
+        List<List<String>> ans = new ArrayList<>();
+        List<StringBuilder> board = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+
+            StringBuilder s = new StringBuilder();
+            for(int j = 0; j < n; j++) s.append('.');
+            board.add(s);
+        }
+
+        boolean[] leftDia = new boolean[2 * n - 1], rightDia = new boolean[2 * n - 1], col = new boolean[n];
+        placeQueens(ans, board, n, leftDia, rightDia, col, 0);
+        return ans;
+    }
+}
+```
+
+Time - 
+		 $O(N!)$
+	In the first row, we have $N$ choices; in the second row, roughly $N-2$ choices; in the third, $N-4$, and so on. Checking safety takes $O(1)$ time due to the boolean arrays, vastly improving over a naive scan of the board.
+
+Space - 
+		 $O(N^2)$
+	$O(N^2)$ to store the board configurations and the recursion stack of depth $N$. The tracking arrays (`col`, `leftDia`, `rightDia`) take $O(N)$ space.
+
