@@ -344,3 +344,109 @@ Space -
 		 $O(N^2)$
 	$O(N^2)$ to store the board configurations and the recursion stack of depth $N$. The tracking arrays (`col`, `leftDia`, `rightDia`) take $O(N)$ space.
 
+
+## [37. Sudoku Solver](https://leetcode.com/problems/sudoku-solver/)
+
+Sol - We pass a recursive function call and do a backtracking checking for the possible numbers in the sudoku
+
+Code Below ->
+
+```
+class Solution {
+
+    public boolean solve(char[][] board){
+
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[0].length; j++){
+                if(board[i][j] == '.'){
+                    for(char k = '1'; k <= '9'; k++){
+                        if(isValid(i,j,k,board)){
+
+                            board[i][j] = k;
+                            if(solve(board)) return true;
+                            else board[i][j] = '.';
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isValid(int row, int col, char k, char[][] board){
+
+        for(int i = 0; i < 9; i++){
+
+            if(board[row][i] == k) return false;
+            if(board[i][col] == k) return false;
+            if(board[3 * (row/3) + i/3][3 * (col/3) + i % 3] == k) return false;
+        }
+        return true;
+    }
+
+    public void solveSudoku(char[][] board) {
+        solve(board);
+    }
+}
+```
+
+Time - 
+		 $O(9^{N})$
+- Let $N$ be the number of empty cells on the Sudoku board.
+- For every empty cell encountered, the algorithm tries up to $9$ different possibilities (digits from `'1'` to `'9'`).
+- In the worst-case scenario (e.g., an empty board or a board designed to trigger maximum backtracking), the algorithm branches out 9 times for each empty cell, resulting in an exponential time complexity of $O(9^{N})$, where $N \le 81$.
+- Checking the validity of a cell takes $O(1)$ time because the board size is fixed at $9 \times 9$, meaning loops for rows, columns, and sub-grids always run a constant number of times ($9$ iterations).
+
+Space -
+		 $O(N)$
+
+
+## [282. Expression Add Operators](https://leetcode.com/problems/expression-add-operators/)
+
+Sol - We pass the substring and do a backtracking for the same until we find the targetSum.
+
+Code Below ->
+
+```
+class Solution {
+
+    public void addingOpp(int i, String path, long resSoFar, long prevNum, List<String> ans, int target, String num){
+
+        if(i == num.length()){
+            if(resSoFar == target) ans.add(path);
+            return;
+        }
+
+        for(int j = i; j < num.length(); j++){
+
+            if(j > i && num.charAt(i) == '0') break;
+            long nums = Long.parseLong(num.substring(i, j+1));
+            if(i == 0) addingOpp(j + 1, path + nums, nums, nums, ans, target, num);
+            else{
+                addingOpp(j + 1, path + "+" + nums, resSoFar + nums, nums, ans, target, num);
+                addingOpp(j + 1, path + "-" + nums, resSoFar - nums, -nums, ans, target, num);
+                addingOpp(j + 1, path + "*" + nums, resSoFar - prevNum + prevNum * nums, prevNum * nums, ans, target, num);
+            }
+        }
+    }
+
+    public List<String> addOperators(String num, int target) {
+
+        List<String> ans = new ArrayList<>();
+        addingOpp(0,"",0,0,ans,target,num);
+        return ans;
+    }
+}
+```
+
+Time - 
+		 $O(4^N \cdot N)$
+- Let $N$ be the length of the string `num`.
+- For each digit position, you can either partition the string (choose the length of the next number using the `for` loop) and then choose among $3$ possible operators (`+`, `-`, `*`) once you are past the first number.
+- In the worst case, this leads to roughly $4^{N-1}$ possible expressions to evaluate (each split has choices, and operators branch out).
+- Additionally, string concatenation (`path + ...` and `Long.parseLong`) takes $O(N)$ time at the leaf nodes (and proportional time along the recursion paths).
+- Thus, the overall time complexity is **$O(4^N \cdot N)$**.
+
+Space -
+		 $O(N)$
