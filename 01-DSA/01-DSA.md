@@ -6,5 +6,6 @@
 - [[05-Linked List]]
 - [[06-Stacks & Queues]]
 - [[07-Recursion]]
+- [[08-Greedy Algo]]
 
 %% End Waypoint %%
