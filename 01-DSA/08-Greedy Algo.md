@@ -30,3 +30,44 @@ class Solution {
 ```
 
 Time - O(N log N)  Space - O(1)
+
+
+## [860. Lemonade Change](https://leetcode.com/problems/lemonade-change/)
+
+Sol - we keep the count of fives and tens and keep conditions like if bill is tens then no fives > 0, and if bills is twenties then fives >0 and tens > 0 etc.
+
+Code Below ->
+
+```
+class Solution {
+
+    public boolean lemonadeChange(int[] bills) {
+
+        int fives = 0, tens = 0;
+        for(int i = 0; i < bills.length; i++){
+
+            if(bills[i] == 5) fives++;
+            else if(bills[i] == 10){
+
+                if(fives < 1) return false;
+                else{
+                    fives--; tens++;
+                }
+            }
+
+            else{
+
+                if(fives > 0 && tens > 0){
+                    tens--; fives--;
+                }
+
+                else if(fives >= 3) fives -= 3;
+                else return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+Time - O(N)  Space - O(1)
