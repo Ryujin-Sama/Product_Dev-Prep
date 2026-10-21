@@ -71,3 +71,30 @@ class Solution {
 ```
 
 Time - O(N)  Space - O(1)
+
+
+## [55. Jump Game](https://leetcode.com/problems/jump-game/)
+
+Sol - We will try to take the most jump and add to a variable and keep checking if we can reach the length of the array if any case where i > maxlen of the array we return false
+
+Code Below ->
+
+```
+class Solution {
+
+    public boolean canJump(int[] nums) {
+
+        int n = nums.length;
+        int maxlen = 0;
+        for(int i = 0; i < n; i++){
+
+            if(i > maxlen) return false;
+            maxlen = Math.max(maxlen, i + nums[i]);
+            if(maxlen >= n - 1) return true;
+        }
+        return true;
+    }
+}
+```
+
+Time - O(N)   Space - O(1)
